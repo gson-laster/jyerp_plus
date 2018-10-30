@@ -1,0 +1,62 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<style>
+	.list{
+		background: #fff;
+		min-height: calc(100vh - 106px);
+	}
+	li{
+		float: left;
+		width: 25%;
+		box-sizing: border-box;
+		border-bottom: 1px solid #e5e5e5;
+		height: 95px;
+		text-align: center;
+		padding-top: 6px;
+	}
+	li p{
+		color: #666666;
+		font-size: 16px;
+	}
+	li:not(:nth-child(4n)){
+		border-right: 1px solid #e5e5e5;
+	}
+	li div{
+		width: 42px;
+		height: 42px;
+		border-radius: 50%;
+		overflow: hidden;
+		margin: 10px auto;
+		padding-top: 10px;
+		box-sizing: border-box;
+	}
+	.list .iconfont{
+		font-size: 24px;
+		color: #fff;
+	}
+</style>
+{/block}
+{block name='content'}
+
+
+<div class="content">
+    	<div class="list">
+    		<ul>
+    			{volist name="_sidebar_menus" id="s"}
+	    			<a href="{$s.url_value}">
+	    				<li>
+		    				<div style="background: {$s.color};">
+		    					<i class="{$s.icon}"></i>
+		    				</div>
+		    				<p>{$s.title}</p>
+    					</li>
+	    			</a>
+    			{/volist}
+    		</ul>
+    	</div>
+    </div>
+    {block name="footermenu"}
+  		{include file="temp/footer" /}
+    {/block}
+{/block}

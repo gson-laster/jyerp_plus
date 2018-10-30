@@ -1,0 +1,401 @@
+{extend name="temp:base"}
+
+{block name="headcss"}
+	<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/input.css"/>
+	<style type="text/css">
+		.imgBox {
+			overflow-x: auto;
+			white-space: nowrap;
+			height: 40px;
+			overflow-y: hidden;
+			padding: 6px 0;
+		}
+		.imgBox img{
+			width: 40px;
+			min-height: 40px;
+			margin-right: 6px;
+		}
+		.imgShowBox{
+			position: fixed;
+			top: 0;
+			width: 100%;
+			max-width: 640px;
+			z-index: 999999;
+			background-color: rgba(0,0,0,0.8);
+			min-height: 100vh;
+		}
+		.imgShowBox img{
+			width: 100%;
+			transition: all ease-out 100ms;
+		}
+			.note{
+		margin-right: 12px;
+	}
+	.note textarea{
+		outline: none;
+		resize: none;
+		margin-top: 10px;
+		width: 100%;
+		box-sizing: border-box;
+		padding-right: 12px;
+		border:1px solid #03A9F4;
+		padding: 8px;
+	}
+	</style>
+{/block}
+{block name="headjs"}
+	<!--<script src="__STATIC__/mobile/layer/laydate.js" type="text/javascript" charset="utf-8"></script>-->
+		<script type="text/javascript">
+
+		function renders(id){
+				laydate.render({
+				   elem: id, //指定元素
+//				   value: '',
+					done: function(value, date, endDate){
+						$(id).next('input').val(value)
+					}
+				});
+		}
+		function renders2(id){
+				laydate.render({
+				   elem: id, //指定元素
+				   type: 'datetime',
+					done: function(value, date, endDate){
+						$(id).next('input').val(value)
+					}
+				});
+		}
+
+	</script>
+{/block}
+	
+{block name="goback"}
+	<div class="goback" onclick="goback()"></div>
+{/block}
+	    {notempty name="isExamine"}
+	    	{block name="head_right"}
+				<div class="title_position_right" onclick="submit()">提交</div>
+			{/block}
+	    {/notempty}
+{block name="content"}
+	<div>
+		
+		<div class="content">
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		标题
+		    	</div>		
+		    	<div class="inp">
+		    		{$worklist.title}
+		    	</div>
+		    </div>
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		申请人
+		    	</div>		
+		    	<div class="inp">
+		    		{:get_nickname(UID)}
+		    	</div>
+		    </div>
+			{notempty name="fields"}
+				{volist name="fields" id="form"}
+					 {switch name="form.type"}
+					 	{case value="static"}
+					       	<div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		{$form.value}
+						    		<input type="hidden" class="subBox" name="{$form.name}" value="{:get_nickname(UID)}" />
+						    	</div>
+						    </div>
+                        {/case}
+                        {case value="text"}
+					       	<div class="notice_title" >
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<input type="text" class="subBox" name="{$form.name}"/>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="password"}
+				          	<div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<input type="password" class="subBox" name="{$form.name}"/>
+						    	</div>
+						    </div>
+					    {/case}
+					    {case value="checkbox"}
+					    	         	<div class="notice_title">
+									    	<div class="posi_left pad_2em">
+									    		{$form.title}
+									    		
+									    	</div>		
+									    	<div class="inp">
+									    		{volist name="form.options" id="check"}
+									    		<p>
+								    				<span>{$check}</span>
+									    			<label class="checkboxLabel"  for="{$form.name}_{$key}">
+									    			{if condition="in_array($key,(array)$form['value'])"}
+									    				<i class="iconfont icon-check"></i>
+									    			{else}
+									    				<i class="iconfont icon-check none"></i>
+									    			{/if} 
+								    					
+									    			</label>
+									    			<input class="checkbox" type="checkbox" name="{$form.name}" id="{$form.name}_{$key}" value="{$key}" {eq name="$form.value" value="$key"}checked{/eq} />
+									    		</p>
+									    		{/volist}
+								    			
+									    			
+									    	</div>
+									    </div>
+					    {/case}
+						{case value="radio"}
+						    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+							    		{volist name="form.options" id="check"}
+							    		<p>
+											<span>{$check}</span>
+							    			<label class="radioLabel" for="{$form.value}_{$key}">
+								    			{eq name="$form.value" value="$key"}
+								    				<i class="iconfont icon-check"></i>
+								    			{else}
+								    				<i class="iconfont icon-check none"></i>
+								    			{/eq} 
+							    			</label>
+							    			<input type="radio" class="radioBox" {eq name="$form.value" value="$key"}checked="checked"{/eq}  name="{$form.name}" id="{$form.value}_{$key}" value="{$key}" />
+							    		</p>
+							    		{/volist}
+						    	</div>
+						    </div>
+					    {/case}
+						{case value="date"}
+						    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div id="d{$form.name}" class="inp">
+						    	</div>
+						    		<input class="subBox" type="hidden" name="{$form.name}" value="" />
+						    		<script type="text/javascript">
+						    			renders('#d{$form.name}')
+						    		</script>
+						    </div>
+						{/case}
+						{case value="datetime"}
+				    	    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div id="d{$form.name}" class="inp">
+						    	</div>
+						    		<input class="subBox" type="hidden" name="{$form.name}" value="" />
+						    		<script type="text/javascript">
+						    			renders2('#d{$form.name}')
+						    		</script>
+						    </div>
+					    {/case}
+					    {case value="switch"}
+					        <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<div class="status">
+						    			<div class="circle {if condition='!!$form.value eq 1'}active{else /}cancelActive{/if}">
+						    				
+						    			</div>
+						    		</div>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="select"}
+					        <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		{$form['options'][$form['value']]}
+						    	</div>
+						    </div>
+						{/case}
+    					{case value="image"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		
+						    		<div class="imgBox">
+						    			{if condition="!empty($form['value'])"}
+											<img onclick="lookImg(this)" src="{:get_file_path($form.value)}" alt="">
+										{else}
+							    			暂无
+							    		{/if}
+						    		</div>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="images"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<div class="imgBox">
+						    			{if condition="!empty($form['value'])"}
+											{volist name=":explode(',',$form['value'])" id="vo"}
+												<img onclick="lookImg(this)" src="{:get_file_path($vo)}" alt="">
+											{/volist}
+										{else}
+							    			暂无
+							    		{/if}
+						    		</div>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="colorpicker"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						  		    <input type="color" value="#{$form.value}" name="{$form.name}" class="subBox"/>
+						    	</div>
+						    </div>
+					    {/case}
+					    {case value="tags"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	
+						    	<div class="inp scroll addLabel">
+									{volist name=":explode(',', $form['value'])" id="v"}<span>{$v}</span>{/volist}
+						    	</div>
+						    </div>
+						{/case}
+						{case value="textarea"}
+					        <div class="neirong">
+						    	{$form.title}
+						    	<p>
+						    		<textarea rows="10" class="subBox" name="{$form.name}"></textarea>
+						    	</p>
+						    </div>
+						{/case}
+		    		 {/switch}
+		   		{/volist}
+		    {/notempty}
+		    
+			    <div class="neirong">
+			    	<div class="posi_left">
+			    		原由
+			    	</div>
+					<div class="inp">
+						{$worklist.content}
+			    	</div>
+			    </div>
+			    {notempty name="isExamine"}
+			    	<div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		审核						    	</div>		
+						    	<div class="inp">
+							    		<p>
+											<span>否决</span>
+							    			<label onclick="radioLabel(this, 0)" class="radioLabel" >
+		    									<i class="iconfont icon-check none"></i>
+								    			 
+							    			</label>
+							    		</p>
+							    		<p>
+											<span>通过</span>
+							    			<label onclick="radioLabel(this, 1)" class="radioLabel" >
+			    								<i class="iconfont icon-check"></i>
+								    			 
+							    			</label>
+							    		</p>
+							    	</div>
+						    </div>
+						      <div class="neirong">
+			    	
+			    	<p>
+			    		    <div class="note">
+    	<p>备注:</p>
+    	<p>
+    	<textarea class="textarea" rows="10"></textarea></p>
+    </div>
+			    	</p>
+			    </div>
+			    {/notempty}
+		</div>
+		<div onclick="hiddens()" class="imgShowBox none" style="overflow: auto;">
+			<!--<img src=""/>-->
+		</div>
+	</div>
+{/block}
+{block name="footerjs"}
+	<script type="text/javascript">
+		var imgShowBox = $(".imgShowBox"), body = $("body");
+		function lookImg(o){
+			imgShowBox.empty();
+			var img = new Image();
+			img.src = $(o).attr('src');
+			imgShowBox.removeClass('none')
+			img.onload = function(){
+				imgShowBox.append(img)
+				var h = imgShowBox.children('img').height();
+				if (h < screen.height) {
+					img.style.transform = 'translateY(' + Number((screen.height - h) / 2) + 'px)';
+				}
+			}
+			body.css('overflow', 'hidden')
+		}
+		function hiddens(){
+			imgShowBox.addClass('none')
+			body.css('overflow', 'auto')
+		}
+		var states = 1;
+		function radioLabel(o, state){
+			states = state;
+			var t = $(o);
+			t.parent('p').siblings().find('i').addClass('none');
+			t.children('i').removeClass('none');
+		
+		}
+		function submit(){
+			var json = {
+				'wid': {:input('id')},
+				'result': states,
+				'remark': $('.textarea').val(),
+				'log_id': '{$log_id}'
+			}
+			
+			$.ajax({
+				type: 'post',
+				data: json,
+				url: '{:url("ban")}',
+				success: function(res){
+					if(res.code == 1){
+						alert('审批成功', 2, false, true);
+					} else {
+						alert(res.msg)
+					}
+				},
+				error: function(){
+					alert('审核失败');
+				}
+			})
+		}
+	</script>
+{/block}

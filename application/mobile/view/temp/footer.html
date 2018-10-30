@@ -1,0 +1,16 @@
+<footer>
+    <link rel="stylesheet" href="__STATIC__/mobile/css/footer.css"/>
+	
+	<div class="footer-box">
+		<div class="footer-table">
+            {volist name="_top_menus" id="menu"}
+			<div class="footer-cloum {$menu['id'] == $_location[0]['id'] ?= 'active'}">
+				<a href="{$menu['url_value']}" target="{$menu['url_target']}">
+					<i class="footer-icon {$menu['icon']}"></i>
+					<p>{$menu['title']}</p>
+				</a>
+			</div>
+            {/volist}
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,80 @@
+{extend name='temp/base' /}  {block name='headcss'}
+<link rel="stylesheet" href="__STATIC__/mobile/css/demo.css"/>
+<style>
+	.box {
+		padding-top: 97px;
+	}
+	.seach-box {
+		width:100%;
+		max-width:640px;
+		padding: 10px 0;
+		border-bottom: 1px solid #DDDDDD;
+		background: #fff;
+		position: fixed;
+		top: 42px;
+		z-index: 1;
+	}
+	
+	.input-box {
+		background: #EAEAEA;
+		border: 1px solid #DCDCDC;
+		border-radius: 32px;
+		padding-left: 18px;
+		margin: 0 28px;
+	}
+	
+	.input-box input {
+		border: none;
+		outline: none;
+		width: 100%;
+		height: 32px;
+		background-color: transparent;
+		color: #AAAAAA;
+		font-size: 16px;
+	}
+	
+	.input-box input::-webkit-input-placeholder {
+		color: #AAAAAA;
+		font-size: 16px;
+	}
+	.content{
+		margin-bottom: 64px;
+	}
+</style>
+{/block} 
+
+{block name='content'}
+<div class="content">
+	<div class="seach-box">
+		<div class="input-box">
+			<input id="input" type="text" value="" placeholder="请输入姓名" />
+		</div>
+	</div>
+	<div id="letter"></div>
+<div class="sort_box">
+{volist name="a" id="vo"}
+<div class="sort_list">
+<a href="{:url('details')}?id={$vo.id}">
+<div class="num_logo">
+<img src="{:get_file_path($vo['avatar'])}" alt="image" class="img" />
+</div>
+<div class="num_name">{$vo['nickname']}</div>
+</a>
+</div>
+{/volist}
+</div>
+<div class="initials">
+<ul>
+</ul>
+</div>
+</div>
+  {block name="footermenu"}
+  		{include file="temp/footer" /}
+  {/block}
+{/block} 
+{block name="footerjs"}
+<script type="text/javascript" src="__STATIC__/mobile/js/sort.js"></script>
+<script type="text/javascript">
+
+</script>
+{/block}

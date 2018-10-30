@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    {block name="meta"}
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    {/block}
+    <!--UC QQ浏览器头部地址栏 无法触发scroll和resize;-->
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <link rel="stylesheet" href="__STATIC__/mobile/css/reset.css"/>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_735883_7dtmb3mr2bx.css"/>
+
+    <title>
+        {$_this_link['title']}
+	</title>
+    <!-- 加载js -->
+    <script type="text/javascript" src="__STATIC__/mobile/js/vue.js"></script>
+    <script type="text/javascript" src="__STATIC__/mobile/js/zepto.js"></script>
+
+
+    
+    {block name="headjs"}
+    
+    {/block}
+    <!-- 加载css -->
+    {block name="headcss"}{/block}
+</head>
+<body>
+	
+<div id="app" class="box">
+	
+<div class="head-title">
+    {block name="goback"}{/block}
+    	{if condition="isset($pageTitle)"}{$pageTitle}{else /}{$_this_link['title']}{/if}
+    {block name="head_right"}{/block}
+</div>
+
+  <!-- 正文内容 -->
+{block name="content"}
+  <!-- 底部菜单 -->
+  {block name="layer"}
+
+  {/block}
+  {block name="footermenu"}
+
+  {/block}
+{/block}
+
+</div>
+{block name="footerjs"}
+
+{/block}
+<script type="text/javascript" src="__STATIC__/mobile/js/layer.js"></script>
+  
+	<script type="text/javascript" defer="defer">
+		/*
+		* 返回按钮
+	    */
+		function goback(url){		
+			url?(location.href = url):(history.go(-1));
+		}
+		//Toast 
+		window.alert = function (txt, time, url, back) {
+		  var _url = url || false;
+		  var _time = time || 2;
+		  layer.open({
+		    content: txt,
+		    time: _time,
+		    skin: 'msg',			
+		  });
+		  if(url)
+			setTimeout(function(){location.href = url;}, _time * 1000)			
+			var back = back || false;
+		  if(back)
+		    setTimeout(function(){history.back(-1);}, _time * 1000)		
+		}
+	</script>
+</body>
+</html>

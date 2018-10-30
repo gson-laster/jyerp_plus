@@ -1,0 +1,115 @@
+{extend name="temp:base"}
+
+{block name="headcss"}
+	<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+{/block}
+{block name="headjs"}
+	<script src="__STATIC__/mobile/layer/laydate.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+	
+{block name="goback"}
+	<div class="goback" onclick="goback()"></div>
+{/block}
+{block name="head_right"}
+	<div @click="fabu" class="title_position_right">新增</div>
+{/block}
+{block name="content"}
+	<div v-cloak>
+		<div class="content">
+		    <div class="notice_title">
+		    	<div class="posi_left">
+		    		计划类型
+		    	</div>		
+		    	<div class="inp">
+		    		<select v-model="par.type">
+		    			<template  v-for="t in type">
+	    					<option :value="t.v">{{t.name}}</option>
+	    				</template>
+		    		</select>
+		    	</div>
+		    </div>
+		    
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		计划标题
+		    	</div>		
+		    	<div class="inp">
+		    		<input v-model="par.title" type="text" />
+		    	</div>
+		    </div>
+		    
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		计划时间	
+		    	</div>		
+		    	<div id="date" class="inp">
+		    		
+		    	</div>
+		    </div>
+		    
+	        <div class="neirong">
+		    	计划详情
+		    	<p>
+		    		<textarea v-model="par.info" rows="10"></textarea>
+		    	</p>
+		    </div>
+	        <div class="neirong">
+		    	备注
+		    	<p>
+		    		<textarea v-model="par.note" rows="10"></textarea>
+		    	</p>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="footerjs"}
+	<script type="text/javascript">
+		new Vue({
+			el: '#app',
+			data: {
+				type: [
+					{v: 0, name: '日报'},
+					{v: 1, name: '周报'},
+					{v: 2, name: '月报'},
+				],
+				par: {
+					title: '',
+					info: '',
+					note: '',
+					plan_time: '{:date('Y-m-d', time());}',
+					type: ''
+				},
+				isClick: 1
+			},
+			mounted: function(){
+				var _this = this;
+				laydate.render({
+				   elem: '#date', //指定元素
+				   value: '{:date('Y-m-d', time());}',
+					done: function(value, date, endDate){
+						_this.par.plan_time = value;
+					}
+				});
+			},
+			methods: {
+				fabu: function(){
+					_this = this;
+					if(this.isClick){
+						_this.isClick = 0;
+						$.ajax({
+							url:'{:url('work_plan')}',
+							type: 'post',
+							data: this.par,
+							success: function(res){
+								if(res.code == 0){
+									_this.isClick = 1;
+								}
+								alert(res.msg, 2, res.url)
+							}
+						})
+					}
+				}
+			}
+		})
+	</script>
+{/block}

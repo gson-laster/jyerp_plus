@@ -1,0 +1,112 @@
+{extend name='temp/base' /} 
+{block name='title'}首页{/block}
+{block name='headcss'}
+<style>
+	.list_box{
+		background: #fff;
+		margin-top: 12px;
+	}
+	.list{
+		position: relative;
+		border-bottom: 1px solid #DCDCDC;
+		line-height: 45px;
+		min-height: 45px;
+		color: #333333;
+	}
+	.posi_left{
+		position: absolute;
+		left: 12px;
+	}
+	.areabox{
+		padding: 0 12px;
+	}
+	.areabox textarea{
+		width: 100%;
+		height: 100px;
+		border: none;
+		outline: none;
+		margin-top: 36px;
+		text-indent: 2em;
+	}
+	.btn{
+	    color: #fff;
+	    background-color: #03A9F4;
+	    line-height: 48px;
+	    text-align: center;
+	    margin: 12px;
+	    border-radius: 4px;
+	    font-size: 18px;
+	}
+	.pos_right{
+		float: right;
+		padding-right: 15px;
+	}
+	.pos_center{
+		padding-left: 100px;
+		display: inline-block;
+	}
+	.iconfont{
+		color: #AAAAAA;
+	}
+</style>
+{/block}
+{block name='content'}
+    	<div class="head-title">
+    		<div onclick="goback()" class="goback">
+    			
+    		</div>
+    		我的外勤
+    	<div class="title_position_right">
+    		外勤记录
+    	</div>
+    	</div>
+   <div class="list_box">
+   	<div class="list">
+   		<div class="posi_left">
+   			位置信息
+   		</div>
+   		<div class="pos_right">
+   			<i class="iconfont icon-dingwei"></i>
+   		</div>
+   	</div>
+   		<div class="list">
+   		<div class="posi_left">
+   			拜访客户
+   		</div>
+   		<div class="pos_center">
+   			选择客户
+   		</div>
+   		<div class="pos_right">
+   			<i class="iconfont icon-arrow-right"></i>
+   		</div>
+   	</div>
+   		<div class="list">
+   		<div class="posi_left">
+   			上传照片
+   		</div>
+   		<div class="pos_right">
+   			<i class="iconfont icon-zhaoxiang"></i>
+   		</div>
+   	</div>
+   		<div class="list">
+   		<div class="posi_left">
+   			相关描述
+   		</div>
+   		<div class="areabox">
+   			<textarea>
+   			
+   			</textarea>
+   		</div>
+   	</div>
+   </div>
+   <div class="btn">
+   	定位中...
+   </div>
+    
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

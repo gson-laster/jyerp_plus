@@ -1,0 +1,163 @@
+{extend name='temp/base' /} {block name='title'}首页{/block} {block name='headcss'}
+<style>
+	.user_top {
+		position: relative;
+		padding: 12px 20px;
+		min-height: 45px;
+		background: #fff;
+		border-bottom: 1px solid #dcdcdc;
+	}
+	
+	.user_img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		overflow: hidden;
+		position: absolute;
+	}
+	
+	.user_img img {
+		width: 100%;
+	}
+	
+	.user_nickname {
+		padding-left: 80px;
+	}
+	
+	.user_nickname p:first-child {
+		font-size: 18px;
+		padding-bottom: 8px;
+	}
+	
+	.user_nickname p:last-child {
+		font-size: 16px;
+	}
+	
+	.menu_list {
+		margin-top: 10px;
+		background-color: #fff;
+	}
+	
+	.list:first-child {
+		border-top: 1px solid #dcdcdc;
+	}
+	
+	.list {
+		line-height: 54px;
+		font-size: 16px;
+		padding-left: 50px;
+		border-bottom: 1px solid #dcdcdc;
+		position: relative;
+	}
+	
+	.list:after {
+		content: '';
+		border-top: 1px solid #aaa;
+		border-right: 1px solid #aaa;
+		height: 8px;
+		width: 8px;
+		transform: rotate(45deg) translateY(-50%);
+		position: absolute;
+		right: 20px;
+		display: inline-block;
+		top: 50%;
+	}
+	
+	.list_img {
+		position: absolute;
+		/*background-size: 20px auto;
+		background-position: center center;
+		background-repeat: no-repeat;*/
+		width: 30px;
+		height: 30px;
+		overflow: hidden;
+		border-radius: 50%;
+		left: 12px;
+		top: 12px;
+		display: flex;
+		display: -webkit-flex;
+	}
+	
+	.clear_cache {
+		background-color: #BD83CD;
+	}
+	
+	.kaoqin {
+		background-color: #17C295;
+	}
+	
+	.set {
+		background-color: #58C7F6;
+	}
+	
+	.login_out {
+		color: #fff;
+		background-color: #EF473A;
+		line-height: 48px;
+		text-align: center;
+		margin: 12px;
+		border-radius: 4px;
+		font-size: 18px;
+	}
+	
+	.iconfont {
+		font-size: 22px;
+		align-self: center;
+		margin: 0 auto;
+		color: #fff;
+	}
+</style>
+{/block} {block name='content'}
+<div class="head-title">我</div>
+<div class="user_top">
+	<div class="user_img">
+        <img src="{:get_file_path($a['zid'])}" alt="image" />
+    </div>
+    <div class="user_nickname">
+        <p>{:session('user_auth.nickname')} ({:session('user_auth.role_name')})</p>
+        <p class="bumen">{$a['title']}</p>
+    </div>
+</div>
+
+<div class="menu_list">
+	<a href="{:url('my_attendance')}">
+		<div class="list">
+			<div style="background-color: #F6BF26;" class="list_img">
+				<i class="iconfont icon-kaoqin"></i>
+			</div>
+			我的考勤
+		</div>
+	</a>
+	<a href="{:url('attendance')}">
+		<div class="list">
+			<div class="kaoqin list_img">
+				<i class="iconfont icon-kaoqin1"></i>
+			</div>
+			外出考勤
+		</div>
+	</a>
+	<a href="{:url('wipecache')}">
+	<div class="list">
+		<div class="list_img clear_cache">
+			<i class="iconfont icon-cache"></i>
+		</div>清空缓存
+	</div>
+	</a>
+	<a href="{:url('edit')}?id=''">
+		<div class="list">
+			<div class="list_img set">
+				<i class="iconfont icon-shezhi"></i>
+			</div>高级设置
+		</div>
+	</a>
+</div>
+<a href="{:url('/user/publics/signout')}">
+	<div class="login_out">
+		注销登录
+	</div>
+</a>
+{block name="footermenu"} {include file="temp/footer" /} {/block} {/block} {block name="footerjs"}
+
+<script type="text/javascript">
+</script>
+{/block}

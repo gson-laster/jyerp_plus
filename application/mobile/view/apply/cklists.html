@@ -1,0 +1,153 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" href="__STATIC__/mobile/css/seach.css"/>
+<link rel="stylesheet" href="__STATIC__/mobile/css/demo.css"/>
+{/block}
+{block name="goback"}<div onclick="goback('{:url('apply/stock')}')" class="goback"></div>
+<div class="burger">
+	<div class="x"></div>
+	<div class="y"></div>
+	<div class="z"></div>
+</div>{/block}
+{block name='content'}
+<div class="menu">
+	<ul>
+		<li class="menuli" data-action="{$action}" onclick="go('')"><a>展示所有</a></li>
+		{volist name="type" id="vo"}
+		<li class="menuli" onclick="go({$vo.id})"><a>{$vo.title}</a></li>
+		{/volist}
+	</ul>
+</div>
+<div class="screen">
+	<div class="navbar"></div>
+	<div class="content">
+		<div class="list">
+		</div>
+	</div>
+</div>
+    {block name="footermenu"}
+    {/block}
+{/block}
+{block name="footerjs"}
+<script type="text/javascript" src="__STATIC__/mobile/js/stopExecutionOnTimeout.js"></script>
+<script type="text/javascript" src="__STATIC__/mobile/js/dropload.js"></script>
+<script type="text/javascript">
+//点击类型刷新页面带参数
+function go(id){
+	location.href = '{:url($action)}?id=' + id;
+}
+//侧边栏
+		if ('ontouchstart' in window) {
+		    var click = 'touchstart';
+		} else {
+		    var click = 'click';
+		}
+		$('div.burger').on(click, function () {
+		    if (!$(this).hasClass('open')) {				
+		        openMenu();
+		    } else {
+		        closeMenu();
+		    }
+		});
+		//$('div.menu ul li a').on(click, function (e) {
+		   // e.preventDefault();
+		   // closeMenu();
+		//});
+		function openMenu() {
+		    $('div.burger').addClass('open');
+		    $('div.y').fadeOut(100);
+		    $('div.screen').addClass('animate');
+		    setTimeout(function () {
+		        $('div.x').addClass('rotate30');
+		        $('div.z').addClass('rotate150');
+		        $('.menu').addClass('animate');
+		        setTimeout(function () {
+		            $('div.x').addClass('rotate45');
+		            $('div.z').addClass('rotate135');
+		        }, 100);
+		    }, 10);
+		}
+		function closeMenu() {
+		    $('div.screen, .menu').removeClass('animate');
+		    $('div.y').fadeIn(150);
+		    $('div.burger').removeClass('open');
+		    $('div.x').removeClass('rotate45').addClass('rotate30');
+		    $('div.z').removeClass('rotate135').addClass('rotate150');
+		    setTimeout(function () {
+		        $('div.x').removeClass('rotate30');
+		        $('div.z').removeClass('rotate150');
+		    }, 50);
+		    setTimeout(function () {
+		        $('div.x, div.z').removeClass('collapse');
+		    }, 70);
+		}
+//上拉加载
+$(function(){
+    var counter = 0;
+    // 每页展示个数
+    var num = {$per_page};
+    var pageStart = 0,pageEnd = 0;
+	var page = 1;
+    // dropload
+	var count = 0;
+    $('.content').dropload({	
+        scrollArea : window,
+        loadDownFn : function(me){
+            $.ajax({
+                type: 'GET',
+				data: {page:page},
+                url: "{:url($action, ['id' => input('id')])}",
+                success: function(data){
+				console.log(data)
+				count += data.data.length;
+				var result = '';
+				counter++;
+				pageEnd = num * counter;
+				console.log(pageEnd)
+				pageStart = pageEnd - num;
+				 if(pageEnd>=data.total){
+					// 锁定
+						me.lock();
+					// 无数据
+						me.noData();						
+				 }
+				 if(data.total == 0){
+					// 锁定
+						me.lock();
+					// 无数据
+						me.noData();
+						me.resetload();
+						return false;
+				 }
+				for(var i = 0; i < pageEnd; i++){
+					switch('{$action}'){
+						case 'material':
+						result += "<a class=\"item opacity\" href=\"{:url('materialdetail')}?id=" + data.data[i].id + "\">\n<h3>" + "名称：" + data.data[i].name + " - 规格：" + data.data[i].version + " - 类型：" + data.data[i].type_name + "</h3>\n</a>";							
+						break;
+						case 'stock':
+						result += "<a class=\"item opacity\" href=\"{:url('stockdetail')}?id=" + data.data[i].id + "\">\n<h3>" + "名称：" + data.data[i].material_name + " - 规格：" + data.data[i].material_version + " - 仓库：" + data.data[i].stock_name + " - 库存：" + data.data[i].number +"</h3>\n</a>";
+						break;
+						default:
+						result +="";
+					}	
+					if((i + 1) >= data.data.length){
+						page++;
+						break;																									
+					}														
+				}														
+				 $('.list').append(result);				 									
+					// 每次数据加载完，必须重置
+					me.resetload();  							
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                }
+            });
+        }
+    });
+});
+</script>
+{/block}

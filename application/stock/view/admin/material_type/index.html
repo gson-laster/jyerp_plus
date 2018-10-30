@@ -1,0 +1,55 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="plugins-css"}
+<link href="__LIBS__/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+{/block}
+
+{block name="content"}    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                
+                <div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <form action="{$Request.url}" method="get">
+                                <div class="toolbar-btn-action">
+                                    <a title="新增" class="btn btn-primary" href="{:url('add', ['module' => $Request.param.group])}"><i class="fa fa-plus-circle"></i> 新增</a>
+                                    <button title="展开所有类型" type="button" class="btn btn-success" id="expand-all"><i class="fa fa-plus"></i> 展开所有类型</button>
+                                    <button title="收起所有类型" type="button" class="btn btn-warning" id="collapse-all"><i class="fa fa-minus"></i> 收起所有类型</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+												{notempty name="menus"}
+                        <div class="dd" id="menu_list">
+                            <ol class="dd-list">{$menus}</ol>
+                        </div>
+                        {/notempty}  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/jquery-nestable/jquery.nestable.js"></script>
+<script src="__LIBS__/jquery-ui/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // 展开所有类型
+        $('#expand-all').click(function(){
+            $('#menu_list').nestable('expandAll');
+        });
+
+        // 收起所有类型
+        $('#collapse-all').click(function(){
+            $('#menu_list').nestable('collapseAll');
+        });        
+    });
+</script>
+{/block}

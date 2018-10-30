@@ -1,0 +1,36 @@
+后台账号
+admin_hpt
+54h4t$0Qp&1XYaxt
+ftp密码
+jyKJ_2377_hpt
+宝塔
+http://101.37.151.208:8888
+admin
+jykj2377@@HPT
+
+正式版数据库
+数据库名：sql23775_com_cn
+用户：sql23775_com_cn
+密码：6DExQtJ6sXHPT
+
+test.23775.com.cn 
+
+ 
+测试版数据库
+数据库名：test_23775
+用户：test_23775
+密码：kP7K7dicYw
+熊宇
+http://47.100.17.45:8090/admin.ph
+远程
+47.100.17.45
+Administrator Jxxy999999
+后台
+jxxyjt  admin
+
+金耀erp  FTP
+访问url : erp.jyforyou.cn
+ftp地址 ：101.37.151.208 端口：21
+
+账号 ：erp_jyforyou_cn
+密码 ：HXWipRRhiY

@@ -1,0 +1,139 @@
+	.content{
+		background: #fff;
+	}
+	.notice_title{
+		position: relative;
+		line-height: 42px;
+		border-bottom: 1px solid #ddd;
+		min-height: 42px;
+	}
+	.posi_left{
+		position: absolute;
+		left: 12px;
+		width: 6em;
+		text-align: right;
+	}
+	.inp{
+		padding-left: 8em;
+		box-sizing: border-box;
+		padding-right: 20px;
+		min-height: 42px;
+	}
+	select{
+		width: 100%;
+		outline: none;
+		line-height: 32px;
+		height: 32px;
+		border: none;
+		/*border-bottom: 1px solid #DDDDDD;*/
+  		-webkit-appearance:none;
+  		padding-left: 12px;
+  		background: #fff;
+	}
+	.inp input{
+		border: none;
+		outline: none;
+		width: 100%;
+	}
+	.neirong{
+		padding: 12px;
+		border-bottom: 1px solid #ddd;
+	}
+	.neirong textarea{
+		width: 100%;
+		margin-top: 10px;
+		outline: none;
+		border:none;
+		text-indent: 2em;
+	}
+
+/*
+ 
+ * 底部slider*/
+.bom {
+  position: fixed;
+  bottom: 0;
+  max-width: 640px;
+  width: 100%;
+  z-index: 9999999999;
+  animation: transi 200ms forwards;
+  background: #EFEFF4;
+  height: 100vh;
+}
+@-webkit-keyframes transi{
+	from{
+	  transform: translateY(100%);
+	}
+	to{
+	  transform: translateY(0);
+	}
+}
+.firstClassify {
+  border-top: 1px solid #D9D9D9;
+  height: calc(100vh - 105px);;
+  overflow-y: scroll;
+}
+
+.bom li{
+
+  font-size: 16px;
+  padding: 12px 0;
+  background: #FFFFFF;
+  border-bottom: 1px solid #D9D9D9;
+  text-align: left;
+  padding-left: 20px;
+}
+.cancel{
+	float: left;
+	padding-left: 20px;
+}
+.confirm{
+    position: absolute;
+    right: 20px;
+    top: 0;
+	
+}
+/*.qxclass {
+  text-align: center;
+  padding: 0 !important;
+  margin-top: 20px;
+  /*display: flex;
+  display: -webkit-flex;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #DCDCDC;
+  white-space: nowrap;
+}
+
+.btn{
+	width: 50%;
+	display: inline-block;
+	padding: 12px 0;
+	height: 100%;
+}
+
+.btn:first-child{
+	border-right: 1px solid #DCDCDC;
+}
+.btn:last-child{
+	color: #03A9F4;
+}*/
+
+.tongzhi{
+	text-align: center;
+	line-height: 36px;
+	border-top: 1px solid #D9D9D9;
+	background: #03A9F4;
+	color: #fff;
+}
+
+/*.choose{
+	
+}*/
+.gou{
+	float: right;
+    padding-right: 20px;
+    font-size: 24px;
+    color: #03A9F4;
+}

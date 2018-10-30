@@ -1,0 +1,83 @@
+{extend name='temp/base' /} 
+{block name='headcss'}
+<style>
+	.list_box{
+		background: #fff;
+		min-height: calc(100vh - 64px);
+		margin-top: 20px;
+		border-top: 1px solid #DCDCDC;
+	}
+	.list{
+		position: relative;
+		border-bottom: 1px solid #DCDCDC;
+		padding: 15px;
+		
+	}
+	.list_posi{
+		position: absolute;
+		left: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.pad-left{
+		padding-left: 90px;
+	}
+	.list img{
+		height: 150px;
+		width: 150px;
+	}
+	
+	.label {
+	    display: inline;
+	    padding: .2em .6em .3em;
+	    font-size: 75%;
+	    font-weight: 700;
+	    line-height: 1;
+	    color: #fff;
+	    text-align: center;
+	    white-space: nowrap;
+	    vertical-align: baseline;
+	    border-radius: .25em;
+	}
+.label-danger {
+    background-color: #d26a5c;
+}
+.label-success {
+    background-color: #46c37b;
+}
+.label-primary {
+    background-color: #a48ad4;
+}
+</style>
+{/block}
+{block name="goback"}<div onclick="goback()" class="goback"></div>
+{present name = "$data_status"}
+{eq name = "$data_status.status" value ="0"}
+<div class="title_position_right">
+ 
+	<a href="{:url('mobile/produce/confirm',['id'=> $data_status.id])}" onclick="return confirm('您确定生产完工了吗？');">点击完工</a>
+</div>
+{/eq}
+{/present}
+{/block}
+{block name='content'}
+    <div class="list_box">
+        {volist name="data_list" id="vo"}
+        	<div class="list">
+        		<div class="list_posi">{$vo.name}</div>
+    
+        			<div class="pad-left">{$vo.value}</div>
+        	
+        	</div>
+        {/volist}
+    </div>
+    {block name="layer"}
+    	{include file="temp:layer"}
+    {/block}
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 	var url = '{$url|default=''}' || false;
+</script>
+{/block}

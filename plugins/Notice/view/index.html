@@ -1,0 +1,21 @@
+<div class="col-md-{$width|default=6}">
+    <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">我的公告</h3>
+        </div>
+        <div class="block-content">
+            <table class="table">
+                <tbody>
+                {volist name="notice" id="vo"}
+                <tr>
+                    <td><a href="{:url('notice/nuser/edit',['id'=>$vo['id']])}">{$vo['title']}</a></td>
+                </tr>
+                {/volist}
+                <tr>
+                    <td><a href="{:url('notice/nuser/index')}">查看更多>></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

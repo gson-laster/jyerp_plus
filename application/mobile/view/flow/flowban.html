@@ -1,0 +1,95 @@
+{extend name='temp/base' /} 
+{block name='headcss'}
+<style>
+	.list_box{
+		background: #fff;
+		min-height: 100vh;
+		margin-top: 20px;
+		border-top: 1px solid #DCDCDC;
+	}
+	.list{
+		position: relative;
+		border-bottom: 1px solid #DCDCDC;
+		padding: 15px;
+		
+	}
+	.list_posi{
+		position: absolute;
+		left: 12x;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.pad-left{
+		padding-left: 80px;
+	}
+	.radio, .note{
+		margin-top: 12px;
+		padding-left: 12px
+
+	}
+	.radio input{
+		margin-left: 4px;
+		margin-right: 10px;
+	}
+	.note{
+		margin-right: 12px;
+	}
+	.note textarea{
+		outline: none;
+		resize: none;
+		margin-top: 10px;
+		width: 100%;
+		box-sizing: border-box;
+		padding-right: 12px;
+		border:1px solid #03A9F4;
+		padding: 8px;
+	}
+</style>
+{/block}
+{block name="goback"}<div onclick="goback()" class="goback"></div>{/block}
+{block name="head_right"}<div class="title_position_right">提交</div>{/block}
+{block name='content'}
+    <div class="list_box">
+        {volist name="data_list" id="vo"}
+        	<div class="list">
+        		<div class="list_posi">{$vo.name}</div>
+        		<div class="pad-left">{$vo.value}</div>
+        	</div>
+        {/volist}
+    
+    <div  class="radio">是否同意：
+		同意<input type="radio" checked name="status" value="1" />	
+		否决<input type="radio" name="status" value="0" />	
+    </div>
+    <div class="note">
+    	<p>备注:</p>
+    	<p>
+    	<textarea rows="10"></textarea></p>
+    </div>
+    </div>
+   
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+	$('.title_position_right').click(function(){
+		var radio = $("input[type='radio']:checked").val();
+		var textarea = $('textarea').val();
+		var json = {
+			remark: textarea,
+			result: radio
+		};
+		$.ajax({
+			type:'POST',
+			data: json,
+			url: "{:url('flowban',['id'=>input('id')])}",
+			success: function(res){
+				alert(res.msg,1,false,true)
+			}
+		})
+
+	})
+	
+	
+</script>
+{/block}

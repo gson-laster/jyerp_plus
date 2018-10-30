@@ -1,0 +1,39 @@
+<style>
+
+    .block-content{text-align: center;}
+    th{text-align: center;}
+    td{text-align: center;}
+</style>
+<div class="col-md-6">
+    <div class="block block-bordered1">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">通信信息列表</h3>
+        </div>
+        <div class="block-content">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>供应商</th>
+                    <th>联系人</th>
+                    <th>手机号</th>
+                </tr>
+                {volist name="task" id="vo"}
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.susername}</td>
+                    <td>{$vo.phone}</td>
+                </tr>
+
+                {/volist}
+                <tr>
+                    <td id="more"><a href="{:url('supplier/index/index')}">查看更多>></a></td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>

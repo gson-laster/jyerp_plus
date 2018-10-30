@@ -1,0 +1,141 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="plugins-css"}
+<link href="__LIBS__/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+{/block}
+
+{block name="content"}
+<style> 
+
+#cal{width:434px;border:1px solid #c3d9ff;font-size:12px;margin:8px 0 0 15px}
+#cal ul#wk{margin:0;padding:0;height:25px}
+#cal ul#wk li{float:left;width:60px;text-align:center;line-height:25px;list-style:none}
+#cal ul#wk li b{font-weight:normal;color:#c60b02}
+#cal #cm{clear:left;border-top:1px solid #ddd;border-bottom:1px dotted #ddd;position:relative}
+#cal #cm .cell{width:60px;height:36px;text-align:center;float:left;}
+#cal #cm .cell .so{font:bold 16px arial;}
+#cal #bm{text-align:right;height:24px;line-height:24px;padding:0 13px 0 0}
+</style>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                
+                <div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        <div id="cal">       
+									        <ul id="wk">
+									        	<li>日</li>
+									          <li>一</li>
+									          <li>二</li>
+									          <li>三</li>
+									          <li>四</li>
+									          <li><b>五</b></li>
+									          <li><b>六</b></li>         
+									        </ul>
+									        <div id="cm" style="height: 192px;">
+									        	{notempty name="sign_days"}
+									            {$sign_days}
+									          {/notempty}
+									        </div>
+									        <div id="bm"></div>
+									      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/jquery-nestable/jquery.nestable.js"></script>
+<script src="__LIBS__/jquery-ui/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // 模块拖拽
+        $( "#sortable" ).sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+
+        // 保存节点
+        $('#save').click(function(){
+            Dolphin.loading();            
+            $.post("{:url('save')}", {menus: $('#menu_list').nestable('serialize')}, function(data) {
+            	//console.log(data);exit();
+                Dolphin.loading('hide');
+                if (data.code) {
+                    $('#save').removeClass('btn-success').addClass('btn-default disabled');
+                    Dolphin.notify(data.msg, 'success');
+                } else {
+                    Dolphin.notify(data.msg, 'danger');
+                }
+            });
+        });
+
+        // 初始化节点拖拽
+        $('#menu_list').nestable({maxDepth:4}).on('change', function(){
+            $('#save').removeAttr("disabled").removeClass('btn-default disabled').addClass('btn-success');
+        });
+
+        // 隐藏禁用节点
+        $('#hide_disable').click(function(){
+            $('.dd-disable').hide();
+        });
+
+        // 显示禁用节点
+        $('#show_disable').click(function(){
+            $('.dd-disable').show();
+        });
+
+        // 展开所有节点
+        $('#expand-all').click(function(){
+            $('#menu_list').nestable('expandAll');
+        });
+
+        // 收起所有节点
+        $('#collapse-all').click(function(){
+            $('#menu_list').nestable('collapseAll');
+        });
+
+        // 禁用节点
+        $('.dd3-content').delegate('.disable', 'click', function(){
+            var self     = $(this);
+            var ids      = self.data('ids');          
+            var ajax_url = '{:url("disable", ["table" => "personnel_papercat"])}';
+            Dolphin.loading();
+            $.post(ajax_url, {ids:ids}, function(data) {
+                Dolphin.loading('hide');
+                if (data.code) {
+                    self.attr('data-original-title', '启用').removeClass('disable').addClass('enable')
+                        .children().removeClass('fa-ban').addClass('fa-check-circle-o')
+                        .closest('.dd-item')
+                        .addClass('dd-disable');
+                } else {
+                    Dolphin.notify(data.msg, 'danger');
+                }
+            });
+            return false;
+        });
+
+        // 启用节点
+        $('.dd3-content').delegate('.enable', 'click', function(){
+            var self     = $(this);
+            var ids      = self.data('ids');
+            var ajax_url = '{:url("enable", ["table" => "personnel_papercat"])}';
+            Dolphin.loading();
+            $.post(ajax_url, {ids:ids}, function(data) {
+                Dolphin.loading('hide');
+                if (data.code) {
+                    self.attr('data-original-title', '禁用').removeClass('enable').addClass('disable')
+                        .children().removeClass('fa-check-circle-o').addClass('fa-ban')
+                        .closest('.dd-item')
+                        .removeClass('dd-disable');
+                } else {
+                    Dolphin.notify(data.msg, 'danger');
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

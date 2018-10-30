@@ -1,0 +1,447 @@
+{extend name="temp:base"}
+
+{block name="headcss"}
+	<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/input.css"/>
+	<style type="text/css">
+		.imgBox {
+			overflow-x: auto;
+			white-space: nowrap;
+			height: 40px;
+			overflow-y: hidden;
+			margin-bottom: 12px;
+		}
+		.imgBox img{
+			width: 40px;
+			min-height: 40px;
+			margin-right: 6px;
+		}
+	</style>
+{/block}
+{block name="headjs"}
+	<script src="__STATIC__/mobile/layer/laydate.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+
+		function renders(id){
+				laydate.render({
+				   elem: id, //指定元素
+//				   value: '',
+					done: function(value, date, endDate){
+						$(id).next('input').val(value)
+					}
+				});
+		}
+		function renders2(id){
+				laydate.render({
+				   elem: id, //指定元素
+				   type: 'datetime',
+					done: function(value, date, endDate){
+						$(id).next('input').val(value)
+					}
+				});
+		}
+	</script>
+{/block}
+	
+{block name="goback"}
+	<div class="goback" onclick="goback()"></div>
+{/block}
+{block name="head_right"}
+	<div onclick="faqi()" class="title_position_right">确定</div>
+{/block}
+{block name="content"}
+	<div>
+		
+		<div class="content">
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		标题
+		    	</div>		
+		    	<div class="inp">
+		    		<input class="subBox" type="text" name="title" value=""/>
+		    	</div>
+		    </div>
+	       	<div class="notice_title">
+		    	<div class="posi_left pad_2em">
+		    		申请人
+		    	</div>		
+		    	<div class="inp">
+		    		{:get_nickname(UID)}
+		    	</div>
+		    </div>
+			{notempty name="data_list"}
+				{volist name="data_list" id="form"}
+					 {switch name="form.type"}
+					 	{case value="static"}
+					       	<div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		{:get_nickname(UID)}
+						    		<input type="hidden" class="subBox" name="{$form.name}" value="{:get_nickname(UID)}" />
+						    	</div>
+						    </div>
+                        {/case}
+                        {case value="text"}
+					       	<div class="notice_title" >
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<input type="text" class="subBox" name="{$form.name}"/>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="password"}
+				          	<div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<input type="password" class="subBox" name="{$form.name}"/>
+						    	</div>
+						    </div>
+					    {/case}
+					    {case value="checkbox"}
+					    	         	<div class="notice_title">
+									    	<div class="posi_left pad_2em">
+									    		{$form.title}
+									    		
+									    	</div>		
+									    	<div class="inp">
+									    		{volist name="form.options" id="check"}
+									    		<p>
+								    				<span>{$check}</span>
+									    			<label class="checkboxLabel" onclick="checkboxLabel(this)" for="{$form.name}_{$key}">
+									    			{eq name="$form.value" value="$key"}
+									    				<i class="iconfont icon-check"></i>
+									    			{else}
+									    				<i class="iconfont icon-check none"></i>
+									    			{/eq} 
+								    					
+									    			</label>
+									    			<input class="checkbox" type="checkbox" name="{$form.name}" id="{$form.name}_{$key}" value="{$key}" {eq name="$form.value" value="$key"}checked{/eq} />
+									    		</p>
+									    		{/volist}
+								    			
+									    			
+									    	</div>
+									    </div>
+					    {/case}
+						{case value="radio"}
+						    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+							    		{volist name="form.options" id="check"}
+							    		<p>
+											<span>{$check}</span>
+							    			<label class="radioLabel" for="{$form.name}_{$key}">
+								    			{eq name="$form.value" value="$key"}
+								    				<i class="iconfont icon-check"></i>
+								    			{else}
+								    				<i class="iconfont icon-check none"></i>
+								    			{/eq} 
+							    			</label>
+							    			<input type="radio" class="radioBox" {eq name="$form.value" value="$key"}checked="checked"{/eq}  name="{$form.name}" id="{$form.name}_{$key}" value="{$key}" />
+							    		</p>
+							    		{/volist}
+						    	</div>
+						    </div>
+					    {/case}
+						{case value="date"}
+						    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div id="d{$form.name}" class="inp">
+						    	</div>
+						    		<input class="subBox" type="hidden" name="{$form.name}" value="" />
+						    		<script type="text/javascript">
+						    			renders('#d{$form.name}')
+						    		</script>
+						    </div>
+						{/case}
+						{case value="datetime"}
+				    	    <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div id="d{$form.name}" class="inp">
+						    	</div>
+						    		<input class="subBox" type="hidden" name="{$form.name}" value="" />
+						    		<script type="text/javascript">
+						    			renders2('#d{$form.name}')
+						    		</script>
+						    </div>
+					    {/case}
+					    {case value="switch"}
+					        <div class="notice_title">
+						    	<div class="posi_left pad_2em">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<div class="status">
+						    			<div class="circle {if condition='!!$form.value eq 1'}active{else /}cancelActive{/if}">
+						    				
+						    			</div>
+						    			<input type="hidden" class="subBox" name="{$form.name}" value="{$form.value}" />
+						    		</div>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="select"}
+					        <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<select class="subBox" name="{$form.name}">
+						    			{volist name="form.options" id="op"}
+						    				<option value="{$key}">{$op}</option>
+					    				{/volist}
+						    		</select>
+						    	</div>
+						    </div>
+						{/case}
+    					{case value="image"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<label class="labelFile" for="{$form.name}">选择图片</label>
+						    		<input type="file"  onchange="FileChange(this, true, 'd{$form.name}')" id="{$form.name}" value="" accept="image/*" />
+						    		<div class="imgBox">
+						    			
+						    		</div>
+						    		<input type="hidden" class="subBox" name="{$form.name}" id="d{$form.name}"/>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="images"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						    		<label class="labelFile" for="{$form.name}">选择图片</label>
+						    		<input type="file"  onchange="FileChange(this, false, 'd{$form.name}')" id="{$form.name}" multiple="multiple" value="" accept="image/*" />
+						    		<div class="imgBox">
+						    			
+						    		</div>
+						    		<input type="hidden" class="subBox" name="{$form.name}" id="d{$form.name}" value="" />
+						    	</div>
+						    </div>
+						{/case}
+						{case value="colorpicker"}
+						    <div class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp">
+						  		    <input type="color" value="#03A9F4" name="{$form.name}" class="subBox"/>
+						    	</div>
+						    </div>
+					    {/case}
+					    {case value="tags"}
+						    <div onclick="inpFocus(this)" class="notice_title">
+						    	<div class="posi_left">
+						    		{$form.title}
+						    	</div>		
+						    	<div class="inp scroll addLabel">
+						  		    <input type="text" class="subBox tags" onblur="addLabel(this)" name="{$form.name}" onkeydown="addLabelUp(event,this)"/>
+						    	</div>
+						    </div>
+						{/case}
+						{case value="textarea"}
+					        <div class="neirong">
+						    	{$form.title}
+						    	<p>
+						    		<textarea rows="10" class="subBox" name="{$form.name}"></textarea>
+						    	</p>
+						    </div>
+						{/case}
+		    		 {/switch}
+		   		{/volist}
+		    {/notempty}
+		    
+			    <div class="neirong">
+			    	原由
+			    	<p>
+			    		<textarea rows="10" name="content" class="subBox"></textarea>
+			    	</p>
+			    </div>
+		</div>
+		
+	</div>
+{/block}
+{block name="footerjs"}
+<script src="__STATIC__/mobile/js/input.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+//图片上传
+	
+function FileChange(o, isSingle, name) {
+	
+	formData(o, isSingle, name)
+	form(o).then(function(arr){
+		var inp = $("#" + name);
+		var oldVal = inp.val();
+		if(oldVal != ''){
+			oldVal += ',';
+		}
+		inp.val(oldVal + arr.join(','))
+	});
+	
+}
+
+//图片转base64
+function formData(o, isSingle){
+    new Promise(function(resolve, reject){
+		
+		var elem = $(o).next('.imgBox');
+		var file = o.files;
+		for (var i = 0; i < file.length; i ++) {
+		    if (!/image\/\w+/.test(file[i].type)) {
+			    alert("请选择图片");
+			    return false;
+		    }
+			var filereder = new FileReader();
+			filereder.readAsDataURL(file[i]);
+			filereder.onload = function(e){
+				var img = new Image();
+				//var r = this.result || this.dataTransfer;
+				img.src = this.result || this.dataTransfer;
+				img.onload = function(){
+					if (isSingle) {
+						elem.empty();
+					}
+					elem.append(img)
+				}
+				img.onerror = function(){
+					alert('图片解析错误')
+				}
+			}
+		}
+
+	})
+}
+
+//提交图片
+function form(o) {
+	return new Promise(function(resolve, reject){
+		
+	var file = o.files;
+	var arr = [];
+	for (var i = 0; i < file.length ;i ++) {
+		var formdata  = new FormData();
+		formdata.append('file', file[i]);
+		$.ajax({
+			type:"POST",
+			url:"{:url('upload')}",
+			data: formdata,
+			async:false,
+			cache: false,
+	        processData : false,
+	        contentType : false,
+			success: function(res){
+				if (res.code == 1) {
+					arr.push(res.id)
+				} else {
+					alert('上传错误,请刷新')
+				}
+				if ((arr.length == (i + 1))) {
+					resolve(arr);
+				}
+			}
+		});
+	}
+
+	})
+}
+var isClick = 1;
+function faqi(){
+	if (isClick) {
+		isClick = 0;
+		//text , 下拉框处理, 
+		var subBox = $(".subBox");
+		var json = {};
+		subBox.each(function(){
+			
+			var t = $(this);
+			json[t.attr('name')] = t.val();
+	
+		})
+		if(json['title'] == ''){
+			alert('标题不能为空');
+			isClick = 1;
+			return false;
+		}
+		if(json['content'] == ''){
+			alert('原由不能为空');
+			isClick = 1;
+			return false;
+		}
+		var checkbox = $(".checkbox:checked,.radioBox:checked"), checkboxArr = {}, tags = $(".tags"), tagsArr = {};
+		
+		//多选框及单选框处理
+		checkbox.each(function(){
+			var _t = $(this);
+			var _n = _t.attr('name');
+			if (!checkboxArr.hasOwnProperty(_n)) {
+				checkboxArr[_n] = [];
+			}
+			checkboxArr[_n].push(_t.val());
+		})
+		//标签
+		tags.each(function(){
+			var _t = $(this);
+			var n = _t.attr('name');
+			if (!tagsArr.hasOwnProperty(n)) {
+				tagsArr[n] = [];
+			}
+			var s = _t.parent('.addLabel').find('span');
+			s.each(function(){
+				tagsArr[n].push($(this).text().replace(/X$/, ''));
+			})
+			
+		})
+
+		for (var i in checkboxArr) {
+			
+			json[i] = checkboxArr[i].join(',');
+		}
+		
+		for (var j in tagsArr) {
+			
+			json[j] = tagsArr[j].join(',');
+		}
+	
+		json['fid'] = "{:input('fid')}";
+	
+	
+		$.ajax({
+			type: 'POST',
+			data: json,
+			url: '{:url("details")}',
+			success: function(res){
+				if (res.code == 1) {
+					alert('新增成功', 2, '{:url('index')}');
+				} else {
+					alert(res.msg);
+					isClick = 1;
+				}
+			},
+			error: function(){
+				alert('内部错误');
+				isClick = 1;
+			}
+		})
+
+	}
+}
+</script>
+{/block}

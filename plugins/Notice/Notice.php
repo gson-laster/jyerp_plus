@@ -1,0 +1,104 @@
+<?php
+// +----------------------------------------------------------------------
+// | 海豚PHP框架 [ DolphinPHP ]
+// +----------------------------------------------------------------------
+// | 版权所有 2016~2017 河源市卓锐科技有限公司 [ http://www.zrthink.com ]
+// +----------------------------------------------------------------------
+// | 官方网站: http://dolphinphp.com
+// +----------------------------------------------------------------------
+// | 开源协议 ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+
+namespace plugins\Notice;
+
+use think\Db;
+use app\common\controller\Plugin;
+use app\notice\model\Nuser as NuserModel;
+
+
+/**
+ * 公告
+ * @package plugins\Notice
+ * @author 黄远东<641435071@qq.com>
+ */
+class Notice extends Plugin
+{
+    /**
+     * @var array 插件信息
+     */
+    public $info = [
+        // 插件名[必填]
+        'name'        => 'Notice',
+        // 插件标题[必填]
+        'title'       => '我的公告',
+        // 插件唯一标识[必填],格式：插件名.开发者标识.plugin
+        'identifier'  => 'notice.huang.plugin',
+        // 插件图标[选填]
+        'icon'        => 'fa fa-fw fa-volume-up',
+        // 插件描述[选填]
+        'description' => '首页------在后台首页显示我的公告',
+        // 插件作者[必填]
+        'author'      => '金耀科技',
+        // 作者主页[选填]
+        'author_url'  => '',
+        // 插件版本[必填],格式采用三段式：主版本号.次版本号.修订版本号
+        'version'     => '1.0.0',
+        // 是否有后台管理功能[选填]
+        'admin'       => '0',
+    ];
+
+    /**
+     * @var array 插件钩子
+     */
+    public $hooks = [
+        'admin_index'
+    ];
+
+
+    /**
+     * 后台首页钩子
+     * @author 蔡伟明 <314013107@qq.com>
+     */
+    public function adminIndex()
+    {
+        $config = $this->getConfigValue();
+
+        if(module_exist('notice')){
+        	
+        	$map['notice_user.uid'] = UID;
+        	// 排序
+        	$order = 'notice_user.create_time desc';
+        	// 数据列表
+            $config['notice'] = NuserModel::getList($map,$order);
+        }else{
+            $config['display']=0;
+        }
+        if ($config['display']) {
+            $this->fetch('index', $config);
+        }
+    }
+
+    /**
+     * 安装方法
+     * @author 蔡伟明 <314013107@qq.com>
+     * @return bool
+     */
+    public function install(){
+         
+         if(module_exist('notice')){
+            return true;
+         }else{
+            $this->error = '未安装或已禁用任务模块';
+            return false;
+         }
+    }
+
+    /**
+     * 卸载方法必
+     * @author 蔡伟明 <314013107@qq.com>
+     * @return bool
+     */
+    public function uninstall(){
+        return true;
+    }
+}

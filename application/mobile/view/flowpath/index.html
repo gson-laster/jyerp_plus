@@ -1,0 +1,62 @@
+{extend name='temp/base' /} 
+{block name='headcss'}
+<style>
+	.content{
+		min-height: (100vh - 42px);
+		background: #fff;
+	}
+	li{
+		padding: 15px;
+		border-bottom: 1px solid #DDDDDD;
+		font-size: 16px;
+		position: relative;
+	}
+	li:after{
+		content: '';
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		border-bottom: 1px solid #ddd;
+		border-right: 1px solid #ddd;
+		right: 20px;
+		top: 50%;
+		transform: rotate(-45deg) translateY(-50%);
+	}
+	.sale{
+		position: absolute;
+		left: 12px;
+		color: #16AFF4;
+	}
+	.myflow{
+		color:white;
+	}
+</style>
+{/block}
+{block name="goback"}<div onclick="goback()" class="goback"></div>{/block}
+{block name="head_right"}
+	<div class="title_position_right"><a href="{:url('mobile/flowpath/my')}" class="myflow">我的申请</a></div>
+{/block}
+{block name='content'}
+    <div class="content">
+    	<div class="list">
+    		<ul>
+    			{volist name="menu_list" id="li"}
+    			<a href="{:url('details', ['fid' => $li.id])}">
+	    			<li>
+	    				<p>{$li.title}</p>
+	    			</li>
+    			</a>
+    			{/volist}
+    		</ul>
+    	</div>
+    </div>
+    {block name="footermenu"}
+  		{include file="temp/footer" /}
+    {/block}
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

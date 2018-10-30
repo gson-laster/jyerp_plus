@@ -1,0 +1,37 @@
+<style>
+    th{text-align: center;}
+    #more{text-align:center; }
+    #page-footer{
+    	display: none !important;
+    }
+</style>
+<div class="col-md-6">
+    <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">会议信息列表</h3>
+        </div>
+        <div class="block-content">
+            <table class="table">
+                <tbody>
+
+
+                <tr>
+                    <th>关键字</th>
+                    <th>时间</th>
+                </tr>
+                {volist name="task" id="vo"}
+                <tr>
+                    <td>{$vo.title}</td>
+                    <td><?php echo date('m月d日 H:i',$vo['s_time']) ?>--<?php echo date('H:i',$vo['e_time']) ?></td>
+           
+                </tr>
+
+                {/volist}
+                <tr>
+                    <td id="more"><a href="{:url('meeting/index/index')}">查看更多>></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

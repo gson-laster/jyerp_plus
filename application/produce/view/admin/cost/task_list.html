@@ -1,0 +1,76 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<div class="row">
+        <div class="col-sm-12">
+        	<div class="block">
+        		<div class="block-header bg-gray-lighter">
+        			<ul class="block-options">
+        				<li><button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button></li>
+        				<li><button type="button" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button></li>
+        			</ul>
+        			<h2 class="block-title">成本核算明细</h2>
+        		</div>
+        		<div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <div class="pull-right search-bar">
+                                    <input type="hidden" name="search_field" id="search-field" value="name|categoryid">                                    
+                                </div>                                                                                      
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-builder table-bordered js-table-checkable">
+                                <thead>
+                                    <tr>      																		                                                                            
+                                        <th class="column-smid ">成品名称<span></span></th> 
+										<th class="column-smnum ">成品数量<span></span></th>										
+										<th class="column-clid ">材料名称<span></span></th>
+										<th class="column-bomclnum ">预计材料数量<span></span></th>
+										<th class="column-sjclnum ">实际材料数量<span></span></th>
+										<th class="column-price ">材料单价(元)<span></span></th>
+										<th class="column-bomrice ">预计材料总价(元)<span></span></th>
+										<th class="column-zprice ">实际材料总价(元)<span></span></th>										
+                                    </tr>
+                                </thead>
+                                <tbody>	
+									{php}$arr=[];$arr1=[];{/php}
+									{volist name="$info" id="vo"}										
+									<tr class="">														
+										{volist name="$vo['cl']" id="v"}
+										{if condition="!in_array($vo['cpid'], $arr)"}
+										<td rowspan="{$vo.cpnum}">{$vo.cpname}</td>
+										<td rowspan="{$vo.cpnum}">{$vo.produce_num}</td>								
+										{/if}										
+										<td>{$v.clname}</td>
+										<td>{$v.quota*$vo.produce_num}</td>
+										<td>{$v.snum}</td>
+										<td>{$v.price}</td>
+										<td>{$v.quota*$vo.produce_num*$v.price}</td>
+										<td>{$v.snum*$v.price}</td>
+									</tr>	
+									{php}
+									array_push($arr, $vo['cpid']);
+									{/php}	
+										{/volist}
+																		
+									{/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </div>
+      </div>	
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/bootstrap-treeview/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+	$(function() {			
+  
+  		});
+	  	</script>
+{/block}

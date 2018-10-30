@@ -1,0 +1,247 @@
+{extend name="layout" /}
+
+{block name="content"}
+<style type="text/css">
+    .jt{
+        text-align:center;
+        font-size:20px;
+        cursor:pointer;
+    }
+    .block-title,.block-options li button{
+        color:#fff;
+    }
+</style>
+<div class="row">
+<div class="col-md-12">
+<div class="block">
+<div class="block-header">
+<ul class="block-options">
+<li>
+</li>
+</ul>
+<h3 class=""><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"></font></font><small style="color:green;font-size:12px">&nbsp;&nbsp;提示：点击箭头增加审批人</small></h3>
+
+</div>
+<div class="block-content block-content-narrow">
+<form class="form-horizontal" action="{:url('admin/flow/examine')}" method="post" enctype="multipart/form-data">
+<div class="block block-themed col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class="row">
+        <div class="block-header bg-success col-md-3 col-lg-3 col-sm-3 col-xs-12">
+        <ul class="block-options">
+        <li>
+        </li>
+        </ul>
+        <h3 class="block-title">开始步骤<br> <label style="font-size:12">填写表单</label>  </h3>
+        </div>
+    </div>
+    <input type="hidden" name="fid" value="{$fid}">
+    {if condition="!empty($flow)"}
+        {php}
+            $p=json_decode($position,true);
+            $o=json_decode($organization,true);
+        {/php}
+        {volist name="$flow" id="vo"}
+        <div class="row">
+             <div class="jt col-md-3 col-lg-3 col-sm-3 col-xs-12" onclick="addSp(this);"><i class="glyphicon glyphicon-arrow-down"></i></div>
+        </div>
+        <div class="row shen">
+            <div class="block-header bg-info col-md-3 col-lg-3 col-sm-3 col-xs-12 spr">
+            <ul class="block-options">
+            <li>
+            <button type="button" onclick="organizationList(this);"><i class="si si-settings"></i></button>
+            {neq name=":count($flow)" value="$key+1"}
+            <button type="button" onclick="delSp(this)"><i class="fa fa-fw fa-trash-o"></i></button>
+            {/neq}
+            </li>
+            </ul>
+            <h3 class="block-title">审批人<br><label style="font-size:12" class="bmsp" flow="{$vo}">
+                {eq name="$vo" value="0"}
+                    上级领导
+                {else}
+                    {volist name="$p" id="v"}
+                        {eq name="$vo" value="$v.id"}
+                            {:ltrim($o[$v.oid],'&nbsp;,┝')}>{$v.title}
+                        {/eq}
+                    {/volist}
+                {/eq}
+            </label></h3>
+            </div>
+        </div>
+        {/volist}
+
+    {else}   
+        <div class="row">
+            <div class="jt col-md-3 col-lg-3 col-sm-3 col-xs-12" onclick="addSp(this);"><i class="glyphicon glyphicon-arrow-down"></i></div>
+        </div>
+        <div class="row shen">
+            <div class="block-header bg-info col-md-3 col-lg-3 col-sm-3 col-xs-12 spr">
+                <ul class="block-options">
+                <li>
+                <button type="button" onclick="organizationList(this);"><i class="si si-settings"></i></button>
+                </li>
+                </ul>
+                <h3 class="block-title">审批人<br> <label style="font-size:12"  class="bmsp"  flow="0">暂无</label>  </h3>
+            </div>
+
+        </div>
+    {/if}
+
+</div>
+
+<div class="form-group">
+    <label class="col-xs-12" for="example-disabled-input"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">审批步骤</font></font></label>
+    <div class="col-sm-9">
+        <input class="form-control splc_detail" type="text" id="example-disabled-input" name="example-disabled-input" placeholder="" disabled="">
+        <input class="splc" type="hidden" name="splc">
+    </div>
+</div>
+<div class="form-group">
+<div class="col-xs-12">
+<button class="btn btn-sm btn-primary" type="submit"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">保存</font></font></button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+
+var organization = {$organization};
+var position = {$position};
+// 增加审批人
+function addSp(obj){
+    var html = '<div class="row">';
+        html+= '<div class="jt col-md-3 col-lg-3 col-sm-3 col-xs-12" onclick="addSp(this);"><i class="glyphicon glyphicon-arrow-down"></i></div>';
+        html+= '</div>';
+        html+='<div class="row shen">';
+        html+='<div class="block-header bg-info col-md-3 col-lg-3 col-sm-3 col-xs-12 spr">';
+        html+='<ul class="block-options">';
+        html+='<li>';
+        html+='<button type="button" onclick="organizationList(this);"><i class="si si-settings"></i></button>';
+        html+='<button type="button" onclick="delSp(this)"><i class="fa fa-fw fa-trash-o"></i></button>';
+        html+='</li>';
+        html+='</ul>';
+        html+='<h3 class="block-title">审批人<br><label style="font-size:12" class="bmsp" flow="0">暂无</label></h3>';
+        html+='</div></div>';
+    $(obj).parent('.row').before(html);
+}
+// 删除审批人
+function delSp(obj){
+    $(obj).parents('.shen').prev('.row').remove();
+    $(obj).parents('.shen').remove();
+    getSp();
+}
+// 部门
+function organizationList(obj){
+    $('.organization').remove();
+    $('.position').remove();
+    var html ='<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12 organization">';
+        html+='<label class="ol-md-6 col-lg-6 col-sm-6 col-xs-12" for="example-select"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">部门</font></font></label>';
+        html+='<div class="ol-md-12 col-lg-12 col-sm-12 col-xs-12">';
+        html+='<select class="form-control" onchange="positionList(this)" id="organization"  size="1">';
+        html+='<option value="0">申请人所在部门</option>'; //属性
+        for (var i in organization) {
+               html+='<option value="'+i+'">'+organization[i]+'</option>'; //属性
+            }
+        html+='</select>';
+        html+='</div>';
+        html+='</div>';
+    $(obj).parents('.spr').after(html);
+    positionList('#organization');
+}
+//职位
+function positionList(obj){
+    $('.position').remove();
+    var bm = $('#organization option:selected').val();
+    var html = '<div class="col-md-6 col-lg-6 col-sm-6 col-xs-12 position">';
+        html+='<label class="ol-md-10 col-lg-10 col-sm-10 col-xs-12" for="example-select"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">职位</font></font></label>';
+        html+='<div class="ol-md-6 col-lg-6 col-sm-6 col-xs-12">';
+        html+='<select class="form-control" id="position" name="example-select" size="1">';
+        if(bm==0){
+            html+='<option value="0">上级领导</option>';
+        }else{
+            for (var i in position) {
+                if(position[i]['oid']==bm){
+                     html+='<option value="'+position[i]['id']+'">'+position[i]['title']+'</option>'; //属性
+                }
+                
+            }
+        }
+        html+='</select>';
+        html+='</div>';
+        html+='<button class="btn btn-info push-5-r push-10 ol-md-1 col-lg-1 col-sm-1 col-xs-3" type="button" onclick="trueSp(this);">√</button>';
+        html+='<button class="btn btn-danger push-5-r push-10 ol-md-1 col-lg-1 col-sm-1 col-xs-3" type="button" onclick="delPosition();">x</button>';
+        html+='</div>';
+   
+    $(obj).parents('.organization').after(html);
+}
+//取消当前审批人编辑
+function delPosition(){
+    $('.position').remove();
+    $('.organization').remove();
+}
+// 设置审批人
+function trueSp(obj){
+    var zw_id = $('#position option:selected').val(); //职位id
+    var spr = organizationPosition(zw_id);
+    $(obj).parents('.shen').find('.spr').find('.bmsp').html(spr);
+    $(obj).parents('.shen').find('.spr').find('.bmsp').attr('flow',zw_id);
+     $('.position').remove();
+    $('.organization').remove();
+    getSp();
+}
+
+function getSp(){
+    var splc = 'form';
+    var splc_detail = '填写表单';
+   $('.bmsp').each(function(){
+        var spid = $(this).attr('flow')
+        splc += '-'+spid;
+        if(spid==0){
+            splc_detail += '——>上级领导';
+        }else{
+            
+            splc_detail += '——>'+organizationPosition(spid);
+        }
+    });
+    $('.splc').attr('value',splc);
+    $('.splc_detail').attr('value',splc_detail);
+   return;
+   // return  
+}
+// 获取审批人职位及名称
+function organizationPosition(zw_id){
+    
+    if(zw_id==0){
+        var spr = '上级领导'; 
+    }else{
+         for (var i in position) {
+            if(position[i]['id']==zw_id){
+                var spr = organization[position[i]['oid']]+'>'+position[i]['title'];
+            }
+         }
+    }
+    return spr.replace(/&nbsp;/g,'').replace(/┝/g,'');
+}
+getSp();
+function count(o){
+        var t = typeof o;
+        if(t == 'string'){
+                return o.length;
+        }else if(t == 'object'){
+                var n = 0;
+                for(var i in o){
+                        n++;
+                }
+                return n;
+        }
+        return false;
+}
+</script>
+{/block}
+
+

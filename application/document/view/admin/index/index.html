@@ -1,0 +1,118 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<div class="row">
+        <div class="col-sm-3">
+        	<div class="block">
+        	<div class="block-header bg-gray-lighter">
+        		<h2 class="block-title">文档目录</h2>
+        	</div>
+          <div class="block-content">
+          <div id="treeview1" class=""></div>
+          </div>
+          </div>
+        </div>  
+        <div class="col-sm-9">
+        	<div class="block">
+        		<div class="block-header bg-gray-lighter">
+        			<ul class="block-options">
+        				<li><button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button></li>
+        				<li><button type="button" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button></li>
+        			</ul>
+        			<h2 class="block-title">文档列表</h2>
+        		</div>
+        		<div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <div class="pull-right search-bar">
+                                    <input type="hidden" name="search_field" id="search-field" value="name|categoryid">
+                                    
+                                </div>                                                               
+                                <div class="toolbar-btn-action">
+                                    <a title="新增目录" icon="fa fa-plus-circle" class="btn btn-primary" href="{:url('index/add')}"><i class="fa fa-plus-circle"></i> 新增目录</a>
+                                    <a title="删除" icon="fa fa-times-circle-o" class="btn btn-danger ajax-post confirm" target-form="ids" href="{:url('index/delete')}"><i class="fa fa-times-circle-o"></i> 删除</a>
+                                    <a title="上传文档" icon="fa fa-arrow-up" class="btn btn-info" href="{:url('index/upfile')}"><i class="fa fa-arrow-up"></i> 上传文档</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="min-width: 70px;padding: 10px;">
+                                            <label class="css-input css-checkbox css-checkbox-primary remove-margin-t remove-margin-b">
+                                                <input type="checkbox" id="check-all"><span></span>
+                                            </label>
+                                        </th>
+                                        <th class="column-id ">ID<span></span></th>
+                                        <th class="column-name ">名称<span></span></th>
+                                        <th class="column-type ">类型<span></span></th>
+                                        <th class="column-create_time ">日期<span></span></th>
+                                        <th class="column-right_button ">操作<span></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{volist name='$data' id='vo'}
+                                    <tr class="">                                    	
+                                        <td class="text-center">
+                                            <label class="css-input css-checkbox css-checkbox-primary">
+                                                <input class="ids" type="checkbox" name="ids[]" value="{$vo.id}"><span></span>
+                                            </label>
+                                        </td>
+                                            <td>{$vo.id}</td>
+                                            <td>{if condition="$vo.type eq '0'"}{$vo.name}{else /}<a data-toggle="tooltip" data-original-title="点击查看" href="{$vo.path}">{$vo.name}</a>{/if}</td>
+                                            <td>{if condition="$vo.type eq '0'"}目录{else /}{$vo.type}{/if}</td>
+                                            <td>{$vo.create_time|date='Y-m-d h:i',###}</td>                                                                                      
+                                            <td>
+                                                <div class="btn-group"><a title="" icon="fa fa-pencil" class="btn btn-xs btn-default" href="{:url('index/edit')}?id={$vo.id}" target="_self" _tag="edit" data-toggle="tooltip" data-original-title="编辑"><i class="fa fa-pencil"></i></a> <a title="" icon="fa fa-times" class="btn btn-xs btn-default ajax-get confirm" href="{:url('index/delete')}?ids={$vo.id}" data-tips="删除文档及目录下的文档无法恢复。" _tag="delete" data-toggle="tooltip" data-original-title="删除"><i class="fa fa-times"></i></a> </div>
+                                            </td>                                       
+                                    </tr>
+                                    {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="data-table-toolbar">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="pagination-info pull-right">
+                                        <div>
+                                            <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="1">
+                                            <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="20">
+                                            / <strong>1</strong> 页，共 <strong>4</strong> 条数据，每页显示数量
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </div>
+      </div>	
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/bootstrap-treeview/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+	$(function() {			
+        var resulet = {$resulet};       
+        $('#treeview1').treeview({
+          	levels: 1,         	         
+          	//nodeIcon: 'glyphicon glyphicon-bookmark',
+        	data: resulet,
+        	onNodeSelected: function(event, node) {
+            var nodeid = node.id;
+             $.ajax({
+           	type:"post",
+            	url:"{:url('index/index')}",
+            	data:{id:nodeid},
+            	success:function(data){
+            		$('tbody').html(data);
+             	}
+             });
+         },
+        });  
+  		});
+	  	</script>
+{/block}

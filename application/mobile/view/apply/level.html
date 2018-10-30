@@ -1,0 +1,58 @@
+{extend name='temp/base' /} 
+{block name='headcss'}
+<style>
+	.content{
+		min-height: calc(100vh - 106px);
+		background: #fff;
+	}
+	li{
+		padding: 15px;
+		padding-left: 50px;
+		border-bottom: 1px solid #DDDDDD;
+		font-size: 16px;
+		position: relative;
+	}
+	li:after{
+		content: '';
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		border-bottom: 1px solid #ddd;
+		border-right: 1px solid #ddd;
+		right: 20px;
+		top: 50%;
+		transform: rotate(-45deg) translateY(-50%);
+	}
+	.sale{
+		position: absolute;
+		left: 12px;
+		color: #16AFF4;
+	}
+</style>
+{/block}
+{block name="goback"}<div onclick="goback('{:url('apply/index')}')" class="goback"></div>{/block}
+{block name='content'}
+    <div class="content">
+    	<div class="list">
+    		<ul>
+    			{volist name="menu_list" id="li"}
+    			<a href="{$li.url_value}">
+	    			<li>
+	    				<i class="sale iconfont {$li.icon}"></i>
+	    				<p>{$li.title}</p>
+	    			</li>
+    			</a>
+    			{/volist}
+    		</ul>
+    	</div>
+    </div>
+    {block name="footermenu"}
+  		{include file="temp/footer" /}
+    {/block}
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

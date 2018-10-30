@@ -1,0 +1,224 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+	.list_content{
+		background: #fff;
+		margin: 0 18px;
+		padding: 15px;
+		border-radius: 4px;
+	}
+	.list > p{
+		text-align: center;
+		color: #A3A3A4;
+		padding: 12px 0;
+	}
+	.list_content p span:first-child{
+		font-size: 18px;
+	}
+	.list_content p span:last-child{
+		float: right;
+		color: #999999;
+	}
+	.descript{
+		color: #666666;
+		margin-top: 24px;
+		line-height: 18px;
+		margin-bottom: 15px;
+		-webkit-line-clamp: 1;
+		/*white-space: nowrap;*/
+	}
+	.lookdetails{
+		color: #505050;
+		position: relative;
+		border-top: 1px solid #E2E2E2;
+		padding-top: 15px;
+	}
+	.lookdetails:after{
+		content: '';
+		position: absolute;
+		right: 12px;
+		width: 10px;
+		height: 10px;
+		border-bottom: 1px solid #989898;
+		border-right: 1px solid #989898;
+		transform: rotate(-45deg);
+		bottom: 2px;
+	}
+	.list_box{
+		padding-bottom: 20px;
+		height: calc(100vh - 97px);
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+	.load_box{
+		min-height: 100%;
+	}
+
+</style>
+{/block}
+{block name="goback"}<div onclick="goback()" class="goback"></div>{/block}
+{block name='content'}
+<div class="seach-box">
+	<div class="input-box">
+		<input type="text" placeholder="请输入关键词" v-model="keywords" />
+		<div class="seach-btn" @click="pushseach">
+			<i class="seach-icon iconfont icon-sousuo"></i>
+		</div>
+	</div>
+</div>
+    <div class="list_box" v-cloak>
+	    	<div ref="trans" @touchstart="start()" @touchmove.prevent ="move()" @touchend ="end" :style="'transform: translateY('+ translateY + 'px);'" class="load_box">
+	    	<a v-for="vo in list" :href="vo.url">
+	    	<div class="list">
+	    		<p v-html="vo.top"></p>
+	    		<div class="list_content">
+	    			<p><span v-html="vo.left"></span><span v-html="vo.right"></span></p>
+	    			<div v-html="vo.bottom" class="text_overflow descript">
+	    				
+	    			</div>
+					
+					<div v-if="vo.hasOwnProperty('url')" class="lookdetails">
+	    				查看详情
+	    			</div>
+								
+	    		</div>
+	    	</div>
+	    	</a>
+	    	<div v-show="!canGet" class="loader">
+	    		
+	    	</div>
+	    	<div :style="'visibility:' + noneShow + ';'" class="empty-list-item">^.^我是有底线的...</div>
+    	</div>
+    </div>
+
+{/block}
+{block name="footerjs"}
+<script type="text/javascript">
+	new Vue({
+		el: '#app',
+		data: {
+			pageY: null,
+			s_pageY: null,
+			translateY: 0,
+			list: [],
+			page: 1,
+			noneShow: 'hidden',
+			canGet: true,
+			height: (document.body.clientHeight - 117),
+			keywords: '',
+			newGet: false,
+		//	emptyHeight: null
+		},
+		mounted: function(){
+			this.pushs();
+
+		},
+		methods: {
+			move: function(){
+				var y = event['changedTouches'][0].pageY;
+				var translateY = Number( y - this.pageY + this.translateY );
+				this.translateY = translateY > 0 ? 0 : translateY;
+				this.pageY = y;
+			},
+			start: function(){
+				this.s_pageY = this.pageY = event['changedTouches'][0].pageY;
+			},
+			end: function(){
+				if (this.s_pageY == event['changedTouches'][0].pageY) {
+					return false;
+				}
+				var _this = this;
+				var trans = _this.$refs.trans;
+				if (-_this.translateY > (trans.offsetHeight - _this.height)) {
+					if (_this.noneShow == 'visible' || !_this.canGet) {
+						this.endSet(trans)
+					} else {
+						this.pushs(this.endSet(trans));
+					}
+				} 
+				//else {
+//					trans.style.transition = 'transform ease-in-out 300ms'
+//					
+//					_this.translateY = _this.translateY - 100;
+				//}
+		
+			},
+			endSet(trans){
+				
+				trans.style.transition = 'transform ease-in-out 300ms'
+			//	console.log(trans.offsetHeight);
+				this.translateY = this.height - trans.offsetHeight;
+//				console.log('y',this.translateY)			
+//				console.log('h', this.height)
+//				console.log('t',this.translateY)
+//				console.log('s',screen.width)
+//				console.log('d',document.body.clientHeight)
+				setTimeout(function() {
+					trans.style.transition = 'none'
+				}, 300)
+			},
+			pushs: function(fn){
+				var _this = this;
+			
+				_this.canGet = false
+				var json = {page: _this.page};
+				if (_this.keywords != '') {
+					json['keywords'] = _this.keywords;
+				}
+				
+					$.ajax({
+						type:"post",
+						url:"",
+						data: json,
+						async:true,
+						success: function(res){
+							if (_this.newGet) {
+								_this.$set(_this, 'list', []);
+								_this.newGet = false;
+								_this.translateY = 0;
+							}
+							if (res.length == 0) {
+								_this.noneShow = 'visible';
+								_this.canGet = true;
+								fn && fn();
+								return false;
+							}
+							
+//							_this.list.push(...res);
+							_this.list.push.apply(_this.list, res);
+							_this.canGet = true;
+							_this.$nextTick(function(){
+								fn && fn()
+
+								_this.page ++;
+							})
+						},
+						error: function(res){
+							alert('获取{$_this_link['title']}列表失败')
+						}
+					});
+				
+			
+			},
+			pushseach: function(){
+				if(!this.newGet){
+					return false;
+				}
+				this.noneShow = 'hidden';
+				this.canGet = true;
+				this.pushs();
+			},
+		
+		},
+		watch: {
+			'keywords': function(){
+				this.page = 1;
+				this.newGet = true;
+			}
+		}
+	})
+	
+</script>
+{/block}

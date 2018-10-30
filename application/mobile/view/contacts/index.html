@@ -1,0 +1,279 @@
+{extend name='temp/base' /}  {block name='headcss'}
+<style>
+	.identifying+div {
+		color: #666666;
+		padding: 10px;
+		font-size: 20px;
+		padding-left: 12px;
+	}
+	
+	.list {
+		position: relative;
+		background: #fff;
+		padding: 15px 0;
+		border-top: 1px solid #dcdcdc;
+	}
+	
+	.list:last-child {
+		border-bottom: 1px solid #dcdcdc;
+	}
+	
+	.img_posi {
+		position: absolute;
+		width: 45px;
+		height: 45px;
+		border-radius: 45px;
+		overflow: hidden;
+		left: 12px;
+	}
+	
+	.img_posi img {
+		width: 100%;
+		min-height: 45px;
+	}
+	
+	.list p {
+		padding-left: 70px;
+	}
+	
+	.name {
+		font-size: 18px;
+		padding-top: 2px;
+	}
+	
+	.list p:last-child {
+		color: #999;
+		padding-top: 6px;
+	}
+	
+	.bumen {
+		color: #999;
+		padding-top: 6px;
+	}
+	
+	#letter_list {
+		position: fixed;
+		top: 49px;
+		right: 0;
+		width: 20px;
+		line-height: 20px;
+	}
+	
+	.seach-box {
+		padding: 10px 28px;
+		border-bottom: 1px solid #DDDDDD;
+		background: #fff;
+	}
+	
+	.input-box {
+		background: #EAEAEA;
+		border: 1px solid #DCDCDC;
+		border-radius: 32px;
+		padding-left: 18px;
+	}
+	
+	.input-box input {
+		border: none;
+		outline: none;
+		width: 100%;
+		height: 32px;
+		background-color: transparent;
+		color: #AAAAAA;
+		font-size: 16px;
+	}
+	
+	.input-box input::-webkit-input-placeholder {
+		color: #AAAAAA;
+		font-size: 16px;
+	}
+	.content{
+		margin-bottom: 64px;
+	}
+</style>
+{/block} 
+
+{block name='content'}
+<div class="content">
+	<div class="seach-box">
+		<div class="input-box">
+			<input id="input" type="text" value="" placeholder="请输入姓名/手机号码" />
+		</div>
+	</div>
+	<div id="list_box">
+		{volist name="a" id="s"}
+
+		<!-- 锚点 -->
+		<a name="{$s['firstchar']}"></a>
+		<a href="/admin.php/mobile/contacts/details/id/{$s['id']}">
+			<div>
+				<!-- 位置标识符 -->
+				<div class="identifying"></div>
+				<div class="{$s['firstchar']}" name="letter_name">
+					<p>{$s['firstchar']}</p>
+				</div>
+				<div class="list">
+					<div class="img_posi">
+						<img src="{:get_file_path($s['zid'])}" alt="image" class="img" />
+					</div>
+					<p class="name">{$s['nickname']}</p>
+					<p class="bumen">{$s['title']}</p>
+					<p>联系方式: {$s['mobile']?:'暂无'}</p>
+				</div>
+			</div>
+		</a>
+		{/volist}
+		<div id="letter_list">
+			<ul>
+				<li>
+					<a href="#A">A</a>
+				</li>
+				<li>
+					<a href="#B">B</a>
+				</li>
+				<li>
+					<a href="#C">C</a>
+				</li>
+				<li>
+					<a href="#D">D</a>
+				</li>
+				<li>
+					<a href="#E">E</a>
+				</li>
+				<li>
+					<a href="#F">F</a>
+				</li>
+				<li>
+					<a href="#G">G</a>
+				</li>
+				<li>
+					<a href="#H">H</a>
+				</li>
+				<li>
+					<a href="#I">I</a>
+				</li>
+				<li>
+					<a href="#J">J</a>
+				</li>
+				<li>
+					<a href="#K">K</a>
+				</li>
+				<li>
+					<a href="#L">L</a>
+				</li>
+				<li>
+					<a href="#M">M</a>
+				</li>
+				<li>
+					<a href="#N">N</a>
+				</li>
+				<li>
+					<a href="#O">O</a>
+				</li>
+				<li>
+					<a href="#P">P</a>
+				</li>
+				<li>
+					<a href="#Q">Q</a>
+				</li>
+				<li>
+					<a href="#R">R</a>
+				</li>
+				<li>
+					<a href="#S">S</a>
+				</li>
+				<li>
+					<a href="#T">T</a>
+				</li>
+				<li>
+					<a href="#U">U</a>
+				</li>
+				<li>
+					<a href="#V">V</a>
+				</li>
+				<li>
+					<a href="#W">W</a>
+				</li>
+				<li>
+					<a href="#X">X</a>
+				</li>
+				<li>
+					<a href="#Y">Y</a>
+				</li>
+				<li>
+					<a href="#Z">Z</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+  {block name="footermenu"}
+  		{include file="temp/footer" /}
+  {/block}
+{/block} 
+{block name="footerjs"}
+<script type="text/javascript">
+	var lists = document.getElementsByClassName('list');
+	var letters = document.getElementsByName('letter_name');
+	//搜索功能
+	$('#input').on('input', function() {
+		var input = document.getElementById('input');
+		//获取输入的值
+		var value = input.value;
+		//      alert(value.toLowerCase());	
+		//关闭所有lists;
+		var count = lists.length;
+		for(var i = 0; i < count; i++) {
+			lists[i].style.display = 'none';
+		}
+
+		//关闭所有letters;
+		var count2 = letters.length;
+		for(var i = 0; i < count2; i++) {
+			letters[i].style.display = 'none';
+		}
+
+		//遍历所有值，如果匹配就显示
+		for(var i = 0; i < count; i++) {
+			var name = lists[i].getElementsByClassName('name')[0].innerHTML;
+			document.getElementById('letter_list').style.display = 'none';
+			//正则查找，忽略大小写
+			var reg = new RegExp(value, 'i');
+			if(name.match(reg)) {
+				lists[i].style.display = 'block';
+			}
+		}
+		//如果为空就全显示；
+		if(!value) {
+			document.getElementById('letter_list').style.display = 'block';
+			var count2 = letters.length;
+			for(var i = 0; i < count2; i++) {
+				//判断这个元素没有之前加的标识符才显示；
+				if(!letters[i].sname) {
+					letters[i].style.display = 'block';
+				}
+			}
+			var count = lists.length;
+			for(var i = 0; i < count; i++) {
+				lists[i].style.display = 'block';
+			}
+		}
+	});
+
+	var parent = document.getElementById('list_box');
+	//循环遍历所有parent下的字母classname；
+	for(var i = 65; i < 91; i++) {
+		var son = parent.getElementsByClassName(String.fromCharCode(i));
+		//如果不为undefined则表示它存在
+		if(!(typeof(son[0]) === 'undefined')) { //如果数量不止一个的话，那么就只留一个；
+			if(son.length > 1) {
+				var count = son.length;
+				for(var j = 1; j < count; j++) {
+					//加一个标识，为的是之后搜索为空的时候不显示这些元素；
+					son[j].sname = 'name';
+					son[j].style.display = 'none';
+				}
+			}
+		}
+	}
+</script>
+{/block}

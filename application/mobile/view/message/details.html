@@ -1,0 +1,67 @@
+{extend name='temp/base' /} 
+{block name='title'}详情{/block}
+{block name='headcss'}
+<style>
+	.list_box{
+		background: #fff;
+		min-height: 100vh;
+		margin-top: 20px;
+		border-top: 1px solid #DCDCDC;
+	}
+	.list{
+		position: relative;
+		border-bottom: 1px solid #DCDCDC;
+		padding: 15px;
+		
+	}
+	.list_posi{
+		position: absolute;
+		left: 12x;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.pad-left{
+		padding-left: 80px;
+	}
+</style>
+{/block}
+{block name='content'}
+    <div class="head-title"><div onclick="goback()" class="goback"></div>详情</div>
+    <div class="list_box">
+    	<div class="list">
+    		<div class="list_posi">审批意见</div>
+    		<div class="pad-left">有意见保留</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">开始时间</div>
+    		<div class="pad-left">2018-12-22 15:52:54</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">结束时间</div>
+    		<div class="pad-left">2019-12-22 15:52:54</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">会议主题</div>
+    		<div class="pad-left">没有主题</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">申请人</div>
+    		<div class="pad-left">没有申请人</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">会议室</div>
+    		<div class="pad-left">露天</div>
+    	</div>
+    	<div class="list">
+    		<div class="list_posi">附件</div>
+    		<div class="pad-left">无</div>
+    	</div>
+    </div>
+    
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

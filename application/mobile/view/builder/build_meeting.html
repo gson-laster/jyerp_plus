@@ -1,0 +1,240 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+	.input-box{
+		margin: 12px;
+	}
+</style>
+{/block}
+{block name="headjs"}
+	<script src="__STATIC__/mobile/layer/laydate.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+{block name="goback"}
+	<div class="goback" onclick="goback()"> </div>
+{/block}
+{block name="head_right"}
+	<div @click="fabu" class="title_position_right">发布</div>
+{/block}
+{block name='content'}
+
+	<div v-cloak>
+   <div class="content">
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		会议主题
+    	</div>		
+    	<div class="inp">
+    		<input v-model="par.title" type="text" />
+    	</div>
+    </div>
+
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		会议日期
+    	</div>		
+    	<div id="date" class="inp">
+    		
+    	</div>
+    </div>
+    
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		开始时间
+    	</div>		
+    	<div id="start_time" class="inp">
+    		
+    	</div>
+    </div>
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		结束时间
+    	</div>		
+    	<div  id="end_time" class="inp">
+    		
+    	</div>
+    </div>
+    
+   	<div @click="danwei()" class="notice_title">
+    	<div style="letter-spacing: 5px;" class="posi_left pad_2em">
+    		主持人
+    	</div>		
+    	<div class="inp">
+    		{{nickname?nickname:'请输入主持人'}}
+    	</div>
+    </div>
+   	<div @click="bumen()" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		参会部门
+    	</div>		
+    	<div class="inp">
+    		<span v-for="item in item_id">{{orginization[item]}},</span>
+    	</div>
+    </div>
+   </div>
+
+  <!--人员弹出框-->
+   <div v-show="layer" class="bom">
+   	<div class="tongzhi">
+   		
+   		选择主持人
+   		<div @click="danwei" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+	<div class="input-box">
+		<input v-model="keywords" type="text" placeholder="请输入员工名/部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="staffshow(item.nickname+'/'+item.title, item.id)" v-for="item in staff" @click="staffChoose(item.id, item.nickname)">{{item.nickname}}-{{item.title}}<i v-show="par.compare == item.id" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+
+  <!--部门弹出层-->
+   <div v-show="layer2" class="bom">
+   	<div class="tongzhi">
+   		选择部门
+   		<div @click="bumen()" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+	<div class="input-box">
+		<input v-model="keywords2" type="text" placeholder="请输入部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="orginizationshow(item, index)" v-for="(item, index) in orginization" @click="orginizationChoose(index)">{{item}}<i v-show="item_id.includes(index.toString())" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+
+	</div>
+
+   
+{/block}
+
+{block name="footerjs"}
+<script type="text/javascript">
+
+
+
+	new Vue({
+		el:'#app',
+		data: {
+			par: {
+				title: '',
+				s_time: '{:date('H:i:s', time());}',
+				e_time: '{:date('H:i:s', strtotime('+2 hours'));}',
+				m_time: '{:date('Y-m-d', time());}',
+				user_id: '',
+				compare: ''
+			},
+			layer: false,
+			layer2: false,
+			keywords: '',
+			staff: {:json_encode($staff);} || [],
+			nickname: '',
+			//部门
+			keywords2: '',
+			orginization: {:json_encode($orginization);} || [],
+			showArr: [],
+			item_id: [],
+			isClick: 1
+		},
+		mounted: function(){
+			var _this = this;
+			laydate.render({
+			    elem: '#date', //指定元素
+			    value: '{:date('Y-m-d', time());}',
+				done: function(value, date, endDate){
+					_this.par.m_time = value;
+				}
+			});
+			laydate.render({
+			   elem: '#start_time'
+			   ,type: 'time',
+			   value: '{:date('H:i:s', time());}',
+			  
+			done: function(value, date, endDate){
+				_this.par.s_time = value;
+			}
+			});
+			laydate.render({
+			  elem: '#end_time'
+			  ,type: 'time',
+			  value: '{:date('H:i:s', strtotime('+2 hours'));}',
+			  
+			 done: function(value, date, endDate){
+				_this.par.e_time = value;
+				
+			}
+			});
+		},
+		methods: {
+			fabu:function(){
+				if(this.isClick) {
+					this.isClick = 0;
+					var _this = this;
+					this.par.user_id = this.item_id.join(',');
+					$.ajax({
+						type:"post",
+						url:"{:url('build_meeting')}",
+						data: this.par,
+						async:true,
+						success: function(res){
+							if (res.code == 0) {
+								_this.isClick = 1;
+								res.url = false;
+							}
+							
+							alert(res.msg, 2, false, true)
+						}
+					});
+			
+				}
+			},
+			//选择单位
+			danwei: function(){
+				　this.layer = !this.layer;
+			},
+			
+			staffChoose: function(id, n){
+				this.par.compare = id;
+				this.nickname = n;
+			},
+			bumen: function(){
+				this.layer2 = !this.layer2;
+			},
+			staffshow: function(text, i){
+				
+				if(text.indexOf(this.keywords) == -1){
+					return false;
+					
+				} else {
+					return true;
+					
+				}
+			
+			},
+			//部门筛选
+			orginizationshow: function(text, i){
+				
+				if(text.indexOf(this.keywords2) == -1){
+					return false;
+					
+				} else {
+					return true;
+				}
+			
+			},
+			orginizationChoose: function(id) {
+				id = id.toString();
+				var index = this.item_id.indexOf(id);
+				index == -1 ? (this.item_id.push(id)) : (this.item_id.splice(index, 1));
+			}
+		}
+	})
+</script>
+{/block}

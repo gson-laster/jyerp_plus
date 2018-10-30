@@ -1,0 +1,66 @@
+
+<!--柱形图-->
+<div class="col-md-6">
+	<div>项目利润表</div>
+	
+	<div id="chartmain" style="width:700px; height: 400px;"></div>
+	
+</div>
+	<script src="__STATIC__/plugins/echarts.simple.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    var option = {
+            title:{
+                text:'项目利润表'
+            },
+            tooltip:{},
+            legend:{
+                data:['用户来源']
+            },
+            xAxis:{
+            	max:4,
+                data:[
+                {empty name="$data"}
+                '暂无数据'
+                {else /}
+                {volist name='data' id='vo' length='5'}
+					"{$vo['name']}",
+					{/volist}
+{/empty}
+
+
+                ]
+            },
+            yAxis:{
+
+            },
+            series:[{
+                name:'利润',
+                type:'bar',
+                barMaxWidth: 50,
+             	label: {
+                normal: {
+                    show: true,
+                    formatter: '{b}: {c}'
+                }
+            },
+                data:[
+                     {empty name="$data"}
+                0
+                {else /}
+                    {volist name ='data' id='vo'}
+                    {value: "{$vo['mlr']}", name:"{$vo['name']}",
+                    itemStyle:{ normal:{color:'#2F4554'} }
+                    },
+						
+                    {/volist}
+                    {/empty}
+                ]
+            }]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('chartmain'));
+
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(option);
+    </script>
+  

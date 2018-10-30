@@ -1,0 +1,347 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+	.input-box{
+		margin: 12px;
+	}
+</style>
+{/block}
+{block name="headjs"}
+	<script src="__STATIC__/mobile/layer/laydate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__STATIC__/finance/js/chineseNumber.js" type="text/javascript" charset="utf-8"></script>
+{/block}
+{block name="goback"}
+	<div class="goback" onclick="goback()"> </div>
+{/block}
+{block name="head_right"}
+	<div @click="submit" class="title_position_right">提交</div>
+{/block}
+{block name='content'}
+
+<div v-cloak>
+   <div class="content">
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		报销名称
+    	</div>		
+    	<div class="inp">
+    		<input v-model="paramer.title"  type="text" />
+    	</div>
+    </div>
+      
+       	<div @click="chooseObj" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		所属项目
+    	</div>		
+    	<div v-html="objName" class="inp">
+    		
+    	</div>
+    </div>
+    
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		报销科目
+    	</div>		
+    	<div class="inp">
+			<select v-model="paramer.project">
+	    			{volist name="apply_subject" id="sub"}
+    					<option :value="{$key}">{$sub}</option>
+    				{/volist}
+    		</select>
+    	</div>
+    </div>
+    
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		报销金额
+    	</div>		
+    	<div class="inp">
+    		<input  onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" v-model="paramer.money" type="number" />
+    	</div>
+    </div>
+    
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		金额大写
+    	</div>		
+    	<div v-html="paramer.big_money" class="inp">
+    		
+    	</div>
+    </div>
+    
+   	<div @click="bumen()" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		部门
+    	</div>		
+    	<div v-html="item_name" class="inp">
+    		
+    	</div>
+    </div>
+    
+   	<div @click="zhiwei" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		职位
+    	</div>		
+    	<div v-html="work_name" class="inp">
+    		
+    	</div>
+    </div>
+   	<div @click="chooseBaoxiaoren" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		报销人
+    	</div>		
+    	<div v-html="baoxiaorenName" class="inp">
+    		
+    	</div>
+    </div>
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		报销日期
+    	</div>		
+    	<div id="date" class="inp">
+    		
+    	</div>
+    </div>
+       	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		累计报销
+    	</div>		
+    	<div class="inp">
+    		<input  onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" v-model="paramer.sum" type="number" />
+    	</div>
+    </div>
+          <div class="neirong">
+		    	备注
+		    	<p>
+		    		<textarea v-model="paramer.remark" rows="10"></textarea>
+		    	</p>
+		    </div>
+   </div>
+</div>
+
+
+  <!--人员弹出框-->
+   <div v-show="baoxiaoren" class="bom">
+   	<div class="tongzhi">
+   		
+   		选择报销人
+   		<div @click="chooseBaoxiaoren" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+
+	<div class="input-box">
+		<input v-model="keywords" type="text" placeholder="请输入员工名/部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="staffshow(item.nickname+'/'+item.title, item.id)" v-for="item in staff" @click="staffChoose(item.id, item.nickname)">{{item.nickname}}-{{item.title}}<i v-show="paramer.zrid == item.id" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+   
+     <!--项目弹出框-->
+   <div v-show="objShow" class="bom">
+   	<div class="tongzhi">
+   		
+   		选择报销项目
+   		<div @click="chooseObj" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+
+	<div class="input-box">
+		<input v-model="ObjKeywords" type="text" placeholder="请输入部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="objShows(item)" v-for="(item, id) in obj" @click="objChoose(id, item)">{{item}}<i v-show="paramer.item == id" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+   
+     <!--部门弹出层-->
+   <div v-show="layer2" class="bom">
+   	<div class="tongzhi">
+   		选择部门
+   		<div @click="bumen()" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+	<div class="input-box">
+		<input v-model="keywords2" type="text" placeholder="请输入部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="orginizationshow(item)" v-for="(item, index) in orginization" @click="orginizationChoose(index, item)">{{item}}<i v-show="index == paramer.depot" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+   
+        <!--部门弹出层-->
+   <div v-show="layer3" class="bom">
+   	<div class="tongzhi">
+   		选择职位
+   		<div @click="zhiwei()" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+	<div class="input-box">
+		<input v-model="keywords3" type="text" placeholder="请输入部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="positionshow(item)" v-for="(item, index) in position" @click="positionChoose(index, item)">{{item}}<i v-show="index == paramer.work" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+   
+   
+{/block}
+
+{block name="footerjs"}
+<script type="text/javascript">
+
+
+	new Vue({
+		el:'#app',
+		data: {
+			paramer: {
+				title: '',
+				zrid: '',
+				item: '',
+				depot: '',
+				work: '',
+				project: '',
+				money: '',
+				bx_time: '{:date('Y-m-d', time());}',
+				sum: '',
+				remark: '',
+			//	time: '',
+				big_money: '',
+				sum: ''
+			},
+			baoxiaoren: false,
+			keywords: '',
+			staff: {:json_encode($staff);} || [],
+			obj: {:json_encode($obj);} || [],
+			orginization: {:json_encode($organization);} || [],
+			position: {:json_encode($Position);} || [],
+			baoxiaorenName: '',
+			ObjKeywords: '',
+			objShow: false,
+			objName: '',
+			layer2: false,
+			keywords2: '',
+			item_name: '',
+			layer3: false,
+			work_name: '',
+			keywords3: '',
+			isClick: 1
+			
+		},
+		mounted: function(){
+			var _this = this;
+			laydate.render({
+			   elem: '#date', //指定元素
+			   value: '{:date('Y-m-d', time());}',
+				done: function(value, date, endDate){
+					_this.paramer.bx_time = value;
+				}
+			});
+		},
+		methods: {
+			chooseBaoxiaoren: function (){
+				this.baoxiaoren = !this.baoxiaoren
+			},
+//			confirm: function(){
+//				this.baoxiaoren = false
+//			},
+			staffshow: function(text, id){
+				if(text.indexOf(this.keywords) == -1) {
+					return false;
+				}
+				return true;
+			},
+			staffChoose: function(id, n){
+				this.paramer.zrid = id;
+				this.baoxiaorenName = n;
+			},
+			chooseObj: function(){
+				this.objShow = !this.objShow;
+			},
+//			objConfirm: function(){
+//				this.objShow = false;
+//			},
+			objShows: function(t){
+				if(t.indexOf(this.ObjKeywords) == -1){
+					return false;
+				}
+				return true;
+			},
+			objChoose: function(id, name){
+				this.paramer.item = id;
+				this.objName = name;
+			},
+			orginizationshow : function(t){
+				if(t.indexOf(this.keywords2) == -1) {
+					return false;
+				}
+				return true
+			},
+			bumen: function(){
+				this.layer2 = !this.layer2;
+			},
+			orginizationChoose: function(id, name){
+				this.paramer.depot = id;
+				this.item_name = name;
+			},
+//			btn: function(){
+//				this.layer2 = false
+//			},
+			positionshow: function(i){
+				if(i.indexOf(this.keywords3) != -1) {
+					return true
+				} else {
+					return false
+				}
+			},
+			positionChoose: function(i, n){
+				this.work_name = n;
+				this.paramer.work = i;
+			},
+			zhiwei: function(){
+				this.layer3 = !this.layer3
+			},
+//			btn3: function(){
+//				this.layer3 = false
+//			},
+			submit: function(){
+				
+					var _this = this;
+					if(this.isClick) {
+						this.isClick = 0;
+						
+						$.ajax({
+							url:'{:url('Reimbursement')}',
+							type: 'post',
+							data: this.paramer,
+							success: function(res){
+								if(res.code == 0) {
+									_this.isClick = 1;
+								}
+								alert(res.msg, 2, res.url)
+							}
+						})
+				
+					}
+				
+			}
+		},
+		watch: {
+			'paramer.money': function(v){
+				this.paramer.big_money = chineseNumber(v)
+			}
+		}
+	})
+</script>
+{/block}

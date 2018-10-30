@@ -1,0 +1,122 @@
+
+<!--饼状图-->
+
+<style>
+ tr{
+ 	text-align: center !important;
+ }
+ .sel{
+ 	float: right;
+ }
+ .sel select{
+ 	border-radius: 3px;
+ }
+ .sel span{
+ 	padding-right: 6px;
+ 	line-height: 26px;
+ }
+</style>
+
+<div class="col-md-6">
+	{notempty name="data"}
+	<div class="sel">
+		<span>项目:</span><select class="sel" onchange="chagedata(this.value)">
+		<option value="-1">所有数据</option>
+	 	{volist name ='data' id='vo'}
+	 		<option value="{$key}">
+	 			{$vo['name']}
+	 		</option>
+ 		{/volist}
+	</select>
+	</div>
+	{/notempty}
+	<div><b>项目总成本统计表</b></div>
+	<div id="chart" style="width:600px; height: 400px;"></div>
+	
+</div>
+	<script src="__STATIC__/plugins/echarts.simple.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	var list = {php}echo json_encode($data);{/php};
+                                             
+	var paramer = [
+	                {empty name="$data"}
+	                1
+	                {else \}
+	                   {volist name ='data' id='vo'}
+	                    	{value: "{$vo['materials_sum']+$vo['facts_sum']+$vo['others_sum']}", name:"{$vo['name']}"},
+	             		{/volist}
+					{/empty}
+             		
+               ]
+   var options = {
+            title:{
+                text:'项目总成本统计表',
+            },
+            tooltip:{
+            	
+            },
+            legend:{
+                data:['来源']
+            },
+              color:[ '#2F4554', 'green','blueviolet', '#A6D8F9', 'green','blueviolet', ],
+            xAxis:{
+                data:[
+	                {empty name="$data"}
+	                '暂无数据'
+	          
+					{/empty}
+                ],
+	                {empty name="$data"}
+                
+                	show:true
+                	{else /}
+                	show:false
+                	
+					{/empty}
+                
+            },
+            yAxis:[
+            	{show:false}
+            ],
+            series:[{
+                name:'项目成本',
+                type:'pie',
+             	label: {
+                normal: {
+                    show: true,
+                    formatter: '{b}: {c}({d}%)'
+                },
+            },
+                data:paramer
+            },
+            ]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('chart'));
+
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(options);
+        
+        
+//      各个项目的成本
+        
+        function chagedata(o) {
+        	var p = '';
+        	if(o == -1) {
+        		p = paramer;
+        	} else {
+        		var i =list[o];
+              
+        		p = [
+        				{value: i['materials_sum'] ? i['materials_sum'] : 0 , name: '材料'},
+        				{value:  i['facts_sum'] ? i['facts_sum'] : 0 , name: '薪水'},
+						{value:  i['others_sum'] ? i['others_sum'] : 0, name: '其他'},
+        			];
+        	}
+          
+        	options.series[0]['data'] = p;
+        	myChart.setOption(options);
+        }
+    </script>
+    
+    	

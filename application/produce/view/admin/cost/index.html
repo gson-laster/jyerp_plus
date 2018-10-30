@@ -1,0 +1,100 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<div class="row">
+        <div class="col-sm-12">
+        	<div class="block">
+        		<div class="block-header bg-gray-lighter">
+        			<ul class="block-options">
+        				<li><button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button></li>
+        				<li><button type="button" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button></li>
+        			</ul>
+        			<h2 class="block-title">成本核算</h2>
+        		</div>
+        		<div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <div class="pull-right search-bar">
+                                    <input type="hidden" name="search_field" id="search-field" value="name|categoryid">                                    
+                                </div>                                                                                      
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-builder table-bordered js-table-checkable">
+                                <thead>
+                                    <tr>      
+									<th class="column-rwname ">项目名称<span></span></th>   
+										<th class="column-objname ">任务名称<span></span></th>
+										                                                                            
+                                        <th class="column-smid ">成品名称<span></span></th> 										
+										<th class="column-money ">材料总价格(元)<span></span></th>
+										<th class="column-dateil ">成品详情<span></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>		
+									{php}$arr=[];$arr1=[];{/php}								
+                                	{volist name='$data_list' id='vo'}									
+										{volist name="$vo['production']" id="v"}
+											{volist name="$v['rw_smid']" id="v1"}
+											<tr class="">										
+											{if condition="$vo['cpnum1'] gt 1"}
+												{if condition="!in_array($v1['obj_id'], $arr)"}
+													<td rowspan="{$vo.cpnum1}">{$v1.objname}</td>									
+												{/if}
+											{else /}
+											<td rowspan="{$v.cpnum}">{$v1.objname}</td>									
+											{/if}		
+											{if condition="$v['cpnum'] gt 1"}
+												{if condition="!in_array($v1['ppid'], $arr1)"}
+													<td rowspan="{$v.cpnum}">{$v1.rwname}</td>									
+												{/if}
+											{else /}
+											<td rowspan="{$v.cpnum}">{$v1.rwname}</td>									
+											{/if}																																													
+											<td rowspan="">{$v1.sname}</td>
+												{php}$count=0;{/php}
+												{volist name="$v1['cl']" id="v2"}
+													{php}$count +=round($v2['quota']*$v2['price']*$v1['produce_num'], 2);{/php}	
+												{/volist}
+											<td>{$count}</td>
+											<td><a title="" icon="fa fa-fw fa-eye" class="btn btn-xs btn-default pop" href="{:url('cost/task_list')}?id={$v1.smid}" _tag="task_list" data-toggle="tooltip" data-original-title="查看详情"><i class="fa fa-fw fa-eye"></i></a></td>
+											</tr>
+												{php}
+												array_push($arr, $v1['obj_id']);
+												array_push($arr1, $v1['ppid']);
+												{/php}
+											{/volist}
+										{/volist}								
+                                    {/volist}									
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="data-table-toolbar">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="pagination-info pull-right">
+                                        <div>
+                                            <input type="text" class="form-control input-sm go-page" id="go-page" name="page" value="1">
+                                            <input type="text" class="form-control input-sm nums" id="list-rows" name="list_rows" value="20">
+                                            / <strong>1</strong> 页，共 <strong>4</strong> 条数据，每页显示数量
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </div>
+      </div>	
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/bootstrap-treeview/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+	$(function() {			
+  
+  		});
+	  	</script>
+{/block}

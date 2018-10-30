@@ -1,0 +1,108 @@
+label{
+	width: 12px;
+	height: 12px;
+	border: 1px solid #ddd;
+	display: inline-block;
+	position: relative;
+}
+input[type="checkbox"], input[type="radio"], input[type="file"]{
+	display: none;
+}
+label i{
+	position: absolute;
+	top: -14px;
+	left: -1px;
+	color: #ff0000;
+}
+.inp p{
+	display: inline-block;
+	padding-right: 8px;
+}
+
+.status{
+	border: 1px solid #DDDDDD;
+	display: inline-block;
+	float: right;
+	width: 48px;
+	height: 24px;
+	border-radius: 24px;
+	margin-top: 9px;
+	/*position: relative;*/
+}
+.circle{
+	width: 24px;
+	height: 24px;
+	border-radius: 24px;
+	background: #ddd;
+	/*position: absolute;*/
+	/*left: 0;*/
+	/*top: 0;*/
+}
+.active{
+	animation: ani ease-in-out .25s, 100ms;
+	animation-fill-mode: forwards;
+}
+
+.cancelActive{
+	animation: cancelani .25s, 100ms;
+	animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes ani{
+	0%{
+		background: #ddd;
+		width: 48px;
+	}
+	/*50%{
+		transform: translateX(50%);
+	}*/
+	100%{
+		transform: translateX(100%);
+		background: #ff0000;
+		width: 24px;
+	}
+}
+
+@-webkit-keyframes cancelani{
+	0%{
+		background: #ff0000;
+		/*transform: translateX(0);*/
+		width: 48px;
+	}
+	/*50%{
+		transform: translateX(50%);
+	}*/
+	100%{
+		background: #ddd;
+		/*transform: translateX(0);*/
+		width: 24px;
+	}
+}
+
+.labelFile{
+	width: 6em;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+}
+
+input[type="color"]{
+	width: 40px;
+	height: 40px;
+	float: right;
+}
+ ::-webkit-color-swatch-wrapper{background-color:#ffffff;}
+
+.addLabel span{
+	background: #A48AD4;
+	display: inline-block;
+	padding: 2px 6px;
+	margin-right: 4px;
+	line-height: 22px;
+	border-radius: 3px;
+	color: #fff;
+}
+.addLabel input{
+	display: inline-block;
+	width: auto;
+}

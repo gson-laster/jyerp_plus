@@ -1,0 +1,426 @@
+{extend name='temp/base' /}
+
+{block name='headcss'}
+<link rel="stylesheet" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+
+    .list_box {
+        background: #fff;
+        margin-top: 12px;
+    }
+
+    .list {
+        position: relative;
+        border-bottom: 1px solid #DCDCDC;
+        line-height: 45px;
+        min-height: 45px;
+        color: #333333;
+    }
+
+    .posi_left {
+        position: absolute;
+        left: 12px;
+
+    }
+
+    .areabox {
+        padding: 0 12px;
+    }
+
+    .areabox textarea {
+        width: 100%;
+        height: 100px;
+        border: none;
+        outline: none;
+        margin-top: 36px;
+        text-indent: 2em;
+    }
+
+    .btn {
+        color: #fff;
+        background-color: #03A9F4;
+        line-height: 48px;
+        text-align: center;
+        margin: 12px;
+        border-radius: 4px;
+        font-size: 18px;
+    }
+
+    .pos_right {
+        float: right;
+        padding-right: 15px;
+    }
+
+    .pos_center {
+        padding-left: 100px;
+        display: inline-block;
+    }
+
+    .iconfont {
+        color: #AAAAAA;
+    }
+
+    .bom {
+        position: fixed;
+        bottom: 0;
+        max-width: 640px;
+        width: 100%;
+        z-index: 9999999999;
+        animation: transi 200ms forwards;
+        background: #EFEFF4;
+        height: 100vh;
+    }
+
+    @-webkit-keyframes transi {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    .firstClassify {
+        border-top: 1px solid #D9D9D9;
+        height: calc(100vh - 105px);;
+        overflow-y: scroll;
+    }
+
+    .bom li {
+
+        font-size: 16px;
+        padding: 12px 0;
+        background: #FFFFFF;
+        border-bottom: 1px solid #D9D9D9;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .tongzhi {
+        text-align: center;
+        line-height: 36px;
+        border-top: 1px solid #D9D9D9;
+        background: #03A9F4;
+        color: #fff;
+    }
+
+    .gou {
+        float: right;
+        padding-right: 20px;
+        font-size: 24px;
+        color: #03A9F4;
+    }
+
+    .cancel {
+        float: left;
+        padding-left: 20px;
+    }
+
+    .confirm {
+        position: absolute;
+        right: 20px;
+        top: 0;
+
+    }
+
+    .input-box {
+        margin: 12px;
+    }
+</style>
+{/block}
+{block name="goback"}
+<div onclick="goback()" class="goback">
+</div>
+{/block}
+{block name="head_right"}
+<div class="title_position_right">
+    外勤记录
+</div>
+{/block}
+{block name='content'}
+
+<div class="list_box">
+    <div class="list">
+        <div class="posi_left">
+            位置信息：
+        </div>
+        <div class="areabox">
+			<textarea class="textarea">
+			</textarea>
+        </div>
+        <div class="pos_right">
+            <i class="iconfont icon-dingwei"></i>
+        </div>
+    </div>
+    <div onclick="bumen()" class="list">
+        <div class="posi_left">
+            拜访客户
+        </div>
+        <div class="pos_center">
+            选择客户
+        </div>
+        <div class="pos_right">
+            <i class="iconfont icon-arrow-right"></i>
+        </div>
+    </div>
+    <div class="list">
+        <div class="posi_left" id="w">
+            上传照片：
+
+        </div>
+
+        <div class="pos_right">
+            <i class="iconfont icon-zhaoxiang" id='chooseImage'></i>
+        </div>
+    </div>
+    <div class="list">
+        <div class="posi_left">
+            相关描述
+        </div>
+        <div class="areabox">
+			<textarea></textarea>
+        </div>
+    </div>
+</div>
+<div class="btn" id="openLocation">
+    正在获取地理位置...
+</div>
+<div class="btn" id="uploadImage">
+    提交
+</div>
+<div class="bom none">
+    <div class="tongzhi">
+        选择客户
+        <div onclick="bumen()" class="confirm ">
+            确认
+        </div>
+    </div>
+    <div class="input-box"><input type="text" placeholder="请输入部门"></div>
+    <ul onclick="choose(event)" class="firstClassify scroll">
+        {volist name="lists" id="li"}
+        <li>{$li->address}<i class="gou iconfont icon-yuanxingxuanzhong" style="display: none;"></i></li>
+        {/volist}
+    </ul>
+</div>
+
+{/block}
+{block name="footerjs"}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript">
+
+
+
+
+    // 通过config接口注入权限验证配置
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: "{$appId}",   // 必填，公众号的唯一标识
+        timestamp: "{$timestamp}", // 必填，生成签名的时间戳
+        nonceStr: "{$nonceStr}", // 必填，生成签名的随机串
+        signature: "{$signature}",// 必填，签名
+        jsApiList: [
+            'getLocation',
+            'openLocation',
+            'chooseImage',
+            'previewImage',
+            'uploadImage',
+            'downloadImage'
+        ] // 必填，需要使用的JS接口列表
+    });
+
+    // 通过ready接口处理成功验证
+    wx.ready(function () {
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。
+        // 对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+        //ready
+        wx.getLocation({
+            // type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+                clatitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                clongitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+
+                //将微信坐标装换成百度坐标
+                var url = "http://api.map.baidu.com/geoconv/v1/?coords=" + clongitude + "," + clatitude + "&from=1&to=3&ak=" + "PdphHUin6wG5kABoi9bB8BNGyClU0VmO";//注意to改为3得到国测局(gcj02)坐标；
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    contentType: "application/json",
+                    dataType: 'jsonp',//这里要用jsonp的方式不然会报错
+                    success: function (data) {
+                        // alert(data.result[0].x);
+                        clng = data.result[0].x;//经度
+                        clat = data.result[0].y;//纬度
+
+                        //查出各种位置信息
+                        var url2 = "http://api.map.baidu.com/geocoder/v2/?location=" + clat + "," + clng + "&output=json&pois=1&ak=PdphHUin6wG5kABoi9bB8BNGyClU0VmO&coordtype=gcj02ll";//注意：设置coordtype为gcj02ll，得到的位置信息更加合理
+                        $.ajax({
+                            url: url2,
+                            type: 'GET',
+                            contentType: "application/json",
+                            dataType: 'jsonp',//这里要用jsonp的方式不然会报错
+                            success: function (data) {
+                                // alert(data.result.business);
+
+                                dataList = data;
+                                sematic_description = data.result.sematic_description;
+                                formatted_address = data.result.formatted_address;
+                                street_number = data.result.addressComponent.street_number;
+
+                                document.querySelector('#openLocation').innerText = "查看地图";
+                                // document.querySelector('#getLocation').innerText="查看位置信息";
+                                document.querySelector('.textarea').innerText = formatted_address + " " + sematic_description;
+                            },
+                            cancel: function (res) {
+                                alert('获取信息失败');
+                            }
+                        });
+
+                    },
+                    cancel: function (res) {
+                        alert('转换坐标失败');
+                    }
+                });
+            },
+            cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+            }
+        });
+
+
+        var images = {
+            localId: [],
+            serverId: []
+        };
+        //拍照或选择图片
+        document.querySelector('#chooseImage').onclick = function () {
+            wx.chooseImage({
+                success: function (res) {
+                    images.localId = res.localIds;
+
+                    var i = 0, length = res.localIds.length;
+                    var node = [];
+                    for (i; i < length; i++) {
+                        node[i] = document.createElement("img");
+                        node[i].className = "img" + i;
+                        node[i].src = images.localId[i];
+                        // alert(node.style.height);
+                        node[i].style.height = "20px";
+                        document.querySelector('#w').appendChild(node[i]);
+                    }
+
+                    //图片预览
+                    // {
+                    var _loop = function _loop(j) {
+                        document.querySelector('.' + node[j].className).onclick = function () {
+                            wx.previewImage({
+                                current: images.localId[j],
+                                urls: images.localId
+                            });
+                        };
+                    };
+
+                    for (var j = 0; length = node.length, j < length; j++) {
+                        _loop(j);
+                    }
+                    ;
+
+                    // }
+                }
+            });
+        };
+
+
+
+
+        // 5.3 上传图片
+        document.querySelector('#uploadImage').onclick = function () {
+
+
+            if (images.localId.length == 0) {
+                alert('请选择图片');
+                return;
+            }
+            var i = 0, length = images.localId.length;
+            images.serverId = [];
+
+            function upload() {
+                wx.uploadImage({
+                    localId: images.localId[i],
+                    success: function (res) {
+                        i++;
+                        alert('已上传：' + i + '/' + length);
+                        images.serverId = res.serverId;
+                        $.ajax({
+                            url: '/admin.php/mobile/my/download/?serverId=' + images.serverId,
+                            type: 'GET',
+                            contentType: "application/json",
+                            dataType: 'json',
+                            success: function (data) {
+
+                                alert(data);
+                            },
+                            cancel: function (data) {
+                                alert("请求失败:".data);
+                            }
+                        });
+
+                        if (i < length) {
+                            upload();
+                        }
+                    },
+                    fail: function (res) {
+                        alert(JSON.stringify(res));
+                    }
+                });
+            }
+
+            upload();
+        };
+
+
+
+
+        //获取本地下载的图片,用于ios
+        // document.querySelector('#getdownloadImage').onclick = function () {
+        //
+        //     wx.getLocalImgData({
+        //         localId: images.localId, // 图片的localID
+        //         success: function (res) {
+        //             var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+        //
+        //
+        //             var a = document.createElement("img");
+        //             // a.className="img"+i;
+        //             a.src = localData;
+        //             // // alert(node.style.height);
+        //             // node[i].style.width="100px";
+        //             document.querySelector('.w').appendChild(a);
+        //
+        //
+        //         }
+        //     });
+        //
+        // }
+
+        //打开地图
+        document.querySelector('#openLocation').onclick = function () {
+            wx.openLocation({
+                // type: 'gcj02';
+                latitude: clat,// 纬度，浮点数，范围为90 ~ -90
+                longitude: clng,// 经度，浮点数，范围为180 ~ -180。
+                name: dataList.result.sematic_description,// 位置名
+                address: dataList.result.formatted_address,// 地址详情说明
+                scale: 28,// 地图缩放级别,整形值,范围从1~28。默认为最大
+                // infoUrl: 'http://weixin.qq.com'// 在查看位置界面底部显示的超链接,可点击跳转
+            });
+        };
+    });
+
+
+    function bumen() {
+        $(".bom").toggleClass('none');
+    }
+</script>
+{/block}

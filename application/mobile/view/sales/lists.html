@@ -1,0 +1,83 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+	.list_content{
+		background: #fff;
+		margin: 0 18px;
+		padding: 15px;
+		border-radius: 4px;
+	}
+	.list > p{
+		text-align: center;
+		color: #A3A3A4;
+		padding: 12px 0;
+	}
+	.list_content span:first-child{
+		font-size: 18px;
+	}
+	.list_content span:last-child{
+		float: right;
+		color: #999999;
+	}
+	.descript{
+		color: #666666;
+		padding-top: 24px;
+		border-bottom: 1px solid #E2E2E2;
+		padding-bottom: 15px;
+	}
+	.lookdetails{
+		color: #505050;
+		position: relative;
+		padding-top: 15px;
+	}
+	.lookdetails:after{
+		content: '';
+		position: absolute;
+		right: 20px;
+		width: 12px;
+		height: 12px;
+		border-bottom: 1px solid #989898;
+		border-right: 1px solid #989898;
+		transform: rotate(-45deg);
+	}
+</style>
+{/block}
+{block name="goback"}<div onclick="goback()" class="goback"></div>{/block}
+{block name='content'}
+<div class="seach-box">
+	<div class="input-box">
+		<input type="text" placeholder="请输入项目名" />
+		<div class="seach-btn">
+			<i class="seach-icon iconfont icon-sousuo"></i>
+		</div>
+	</div>
+</div>
+    <div class="list_box">
+    	{volist name="data_list" id="vo"}
+    	<a href="{:url('contractdetail',['id'=>$vo['id']])}">
+    	<div class="list">
+    		<p>制单时间：{:date('Y-m-d',$vo['create_time'])}</p>
+    		<div class="list_content">
+    			<p><span>{$vo.name}</span><span>业务员:{$vo.zrid}</span></p>
+    			<div class="descript">
+    				时间：{:date('Y-m-d',$vo['document_time'])} —— {:date('Y-m-d',$vo['end_time'])}
+    			</div>
+    			<div class="lookdetails">
+    				查看详情
+    			</div>
+    		</div>
+    	</div>
+    	</a>
+    	{/volist}
+    </div>
+    {block name="footermenu"}
+    {/block}
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

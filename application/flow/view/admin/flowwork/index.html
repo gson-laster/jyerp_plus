@@ -1,0 +1,40 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<style type="text/css">
+    .list-group-item a{
+        color:#646464;
+    }
+    .list-group-item a:hover{
+        color:#5c90d2;
+    }
+</style>
+<div class="row">
+{volist name="$flowtype" id="vo"}
+<div class="col-md-4 col-lg-4 col-sm-4 col-xs-12">
+    <div class="block">
+        <div class="block-header">
+             <h3 class="block-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{$vo.title}</font></font></h3>
+        </div>
+        <ul class="list-group">
+            {php}$count=1;{/php}
+            {volist name="$flow" id="v"}
+                {eq name="$vo.id" value="$v.tid"}
+                    {php}++$count;{/php}
+                    <li class="list-group-item"><a href="{:url('flow/flowwork/add',['fid'=>$v.id])}"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{$v.title}</font></font></a></li>
+                {/eq}
+            {/volist}
+            {eq name="$count" value="1"}
+                 <li class="list-group-item"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><br>暂无</font></font></li>
+            {/eq}
+        </ul>
+    </div>
+</div>
+{/volist}
+</div>
+{/block}
+{block name="script"}
+
+{/block}
+
+

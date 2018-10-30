@@ -1,0 +1,99 @@
+{extend name='temp/base' /} 
+{block name='title'}消息{/block}
+{block name='headcss'}
+<style>
+	.list_box{
+		background: #fff;
+		min-height: calc(100vh - 106px);
+	}
+	.list{
+		position: relative;
+		padding: 12px;
+		min-height: 48px;
+		border-bottom: 1px solid #dcdcdc;
+	}
+	.list_img{
+		position: absolute;
+		left: 15px;
+		width: 45px;
+		height: 45px;
+		border-radius: 50%;
+		overflow: hidden;
+		text-align: center;
+		padding-top: 9px;
+		box-sizing: border-box;
+		/*background-position: center center;
+		background-size: 30px auto;
+		background-repeat: no-repeat;*/
+	}
+	
+	.list_content{
+		padding-left: 60px;
+	}
+	.list_img i{
+		font-size: 28px;
+		color: #fff;
+	}
+	/*.notice{
+		background-color: #ED5754;
+		background-image: url('__STATIC__/mobile/img/notice.png');
+	}*/
+	.list_content p:first-child{
+		font-size: 18px;
+		padding-top: 4px;
+	}
+	.list_content p:last-child{
+		font-size: 16px;
+		padding-top: 6px;
+		color: #999999;
+	}
+	.text_overflow{
+    	-webkit-line-clamp: 1;
+	}
+	.circle{
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #FF0000;
+		display: inline-block;
+		margin-right: 8px;
+	}
+</style>
+{/block}
+{block name='content'}
+    <div class="list_box">
+    		{volist name="_sidebar_menus" id="s"}
+    		{php}
+    			if(isset($list[$s['params']])){
+    				$data = $list[$s['params']];
+    			} else {
+    				$data = [
+    					'data' => '',
+    					'no_read' =>0
+    				];
+    			}
+			{/php}
+    		 	<a href="{$s.url_value}">
+	    	<div class="list">
+	    		<div style="background: {$s.color};" class="list_img notice">
+	    			<i class="{$s.icon}"></i>
+	    		</div>
+	    		<div class="list_content">
+	    			<p>{if condition="$data['no_read'] gt 0"}<i class="circle"></i>{/if}{$s.title}</p>
+	    			<p class="text_overflow">{$data['data']|default=""}</p>
+	    		</div>
+	    	</div>
+		</a>
+		{/volist}
+    </div>
+        		
+    {block name="footermenu"}
+  		{include file="temp/footer" /}
+    {/block}
+{/block}
+{block name="footerjs"}
+
+<script type="text/javascript">
+ 
+</script>
+{/block}

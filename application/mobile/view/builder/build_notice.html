@@ -1,0 +1,205 @@
+{extend name='temp/base' /} 
+
+{block name='headcss'}
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/build_notice.css"/>
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/css/seach.css"/>
+<style>
+	.input-box{
+		margin: 12px;
+	}
+</style>
+{/block}
+{block name="goback"}
+	<div class="goback" onclick="goback()"></div>
+{/block}
+{block name="head_right"}
+	<div @click="fabu" class="title_position_right">发布</div>
+{/block}
+{block name='content'}
+<div v-cloak>
+	
+   <div class="content">
+   	<div class="notice_title">
+    	<div class="posi_left pad_2em">
+    		标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题
+    	</div>		
+    	<div class="inp">
+    		<input v-model="par.title" type="text" />
+    	</div>
+    </div>
+    <div class="notice_title">
+    	<div class="posi_left">
+    		公告类型
+    	</div>		
+    	<div class="inp">
+    		<select v-model="par.cate">
+    			{volist name="cate" id='c'}
+    				<option value="{$key}">{$c}</option>
+    			{/volist}
+    		</select>
+    	</div>
+    </div>
+   	<div v-show="par.cate == 3" @click="danwei()" class="notice_title">
+    	<div class="posi_left pad_2em">
+    		通知人员
+    	</div>		
+    	<div class="inp">
+    		<span v-for="item in staffIds">
+    			{{staff[item]['nickname']}},
+    		</span>
+    	</div>
+    </div>
+
+    <div class="neirong">
+    	公告描述
+    	<p>
+    		<textarea v-model="par.description" rows="10"></textarea>
+    	</p>
+    </div>
+     <div class="neirong">
+    	公告详情
+    	<p>
+    		<textarea v-model="par.info" rows="10"></textarea>
+    	</p>
+    </div>
+     <div class="neirong">
+    	备注
+    	<p>
+    		<textarea v-model="par.note" rows="10"></textarea>
+    	</p>
+    </div>
+   </div>
+   
+   <!--部门弹出层-->
+   <div v-show="layer" class="bom">
+   	<div class="tongzhi">
+   	
+   		选择通知人员
+   		<div @click="danwei" class="confirm">
+ 			确认
+ 		</div>
+   	</div>
+	<div class="input-box">
+		<input v-model="keywords" type="text" placeholder="请输入员工名/部门" />
+	</div>
+  <ul class="firstClassify scroll">
+	<li v-show="staffIds.length == 0 && keywords == ''" @click="allChoose">全部选择</li>
+	<li v-show="staffIds.length != 0 && keywords == ''" @click="allChoose">全部取消</li>
+	<li v-show="keywords != ''" @click="allChoose">全选以下</li>
+	<li v-show="keywordShow(item.nickname+'/'+item.title, item.id)" v-for="item in staff" @click="staffChoose(item.id)">{{item.nickname}}-{{item.title}}<i v-show="staffIds.includes(item.id.toString())" class="gou iconfont icon-yuanxingxuanzhong"></i></li>
+  </ul>
+
+</div>
+
+
+	</div>
+   
+   
+{/block}
+
+{block name="footerjs"}
+<script type="text/javascript">
+	
+	new Vue({
+		el:'#app',
+		data: {
+			par: {
+				title: '',
+				cate: '',
+				description: '',
+				info: '',
+				note: '',
+				to_user: '',
+				noticer: ''
+			},
+			layer: false,
+			staff: {:json_encode($staff);} || [],
+			staffIds: [],
+			keywords:'',
+			isClick: 1
+		},
+		methods: {
+			//发布公告
+			fabu:function(){
+				if(this.isClick) {
+					var _this = this;
+					this.isClick = 0;
+					
+					if(this.par.cate == 3){
+						this.par.to_user = this.staffIds.join(',');
+						for (var j = 0; j < this.staffIds.length; j ++) {
+							this.par.noticer += this.staff[this.staffIds[j]]['nickname'] + ',';
+						}
+					}
+					this.par.noticer = this.par.noticer.slice(0, -1);
+					$.ajax({
+						type:"post",
+						url:"{:url('build_notice')}",
+						data: this.par,
+						async:true,
+						success: function(res){
+							if(res.code == 0) _this.isClick = 1;
+							alert(res.msg, 2, false, true)
+						}
+					});
+			
+				}
+			},
+			//选择单位
+			danwei: function(){
+				this.layer = !this.layer;
+			},
+//			confirm: function(){
+//			   this.layer = false;
+//			},
+			//全选
+			allChoose: function(){
+				//关键词为空全选
+				if(this.keywords == ''){
+					if (this.staffIds.length == 0) {
+						this.$set(this, 'staffIds',  Object.keys(this.staff));
+					} else{
+						this.$set(this, 'staffIds',  []);
+					}
+				} else {
+					var keyArrIds = [];
+					var chooseKeyArrIds = [];
+					for (var j in this.staff) {
+						if (this.staff[j]['show']) {
+							var id = this.staff[j]['id'].toString();
+							keyArrIds.push(id);
+							if (this.staffIds.includes(id)) {
+								chooseKeyArrIds.push(id);
+							}
+						}
+					}
+					if (chooseKeyArrIds.length == 0) {
+						this.staffIds.push(...keyArrIds);
+					} else {
+						for (var i = 0; i < chooseKeyArrIds.length; i ++) {
+							var index = this.staffIds.indexOf(chooseKeyArrIds[i]);
+							if(index != -1) this.staffIds.splice(index, 1);
+						}
+					}
+				}
+			},
+			staffChoose: function(id) {
+				id = id.toString();
+				var index = this.staffIds.indexOf(id);
+				index == -1 ? (this.staffIds.push(id)) : (this.staffIds.splice(index, 1));
+			},
+			keywordShow: function(text, i) {
+				if(text.indexOf(this.keywords) == -1){
+					this.staff[i]['show'] = false
+					return false;
+					
+				} else {
+					this.staff[i]['show'] = true
+					return true;
+					
+				}
+			}
+		}
+	})
+</script>
+{/block}

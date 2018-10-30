@@ -1,0 +1,96 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+<div class="row">
+        <div class="col-sm-3">
+        	<div class="block">
+        	<div class="block-header bg-gray-lighter">
+        		<h2 class="block-title">部门</h2>
+        	</div>
+          <div class="block-content">
+          <div id="treeview1" class=""></div>
+          </div>
+          </div>
+        </div>  
+        <div class="col-sm-9">
+        	<div class="block">
+        		<div class="block-header bg-gray-lighter">
+        			<ul class="block-options">
+        				<li><button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button></li>
+        				<li><button type="button" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button></li>
+        			</ul>
+        			<h2 class="block-title">通讯列表</h2>
+        		</div>
+        		<div class="block-content tab-content">
+                    <div class="tab-pane active">
+                        <div class="row data-table-toolbar">
+                            <div class="col-sm-12">
+                                <div class="pull-right search-bar">
+                                    <input type="hidden" name="search_field" id="search-field" value="nickname">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" id="search-btn" data-toggle="dropdown" type="button">姓名 <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                               <li>
+                                                    <a tabindex="-1" href="javascript:void(0)" data-field="nickname">姓名</a>
+                                                </li>            
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <input type="hidden" name="haha" value="1">
+                                            <input type="text" class="form-control" value="{$keyword}" data-url="{:url('index')}" id="search-input" name="keyword" placeholder="请输入姓名">
+                                        </div>
+                                    </div>
+                                </div>                                                               
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-builder table-hover table-bordered table-striped js-table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th class="column-nickname ">头像<span></span></th>
+                                        <th class="column-pic ">姓名<span></span></th>
+                                        <th class="column-position ">职位<span></span></th>
+                                        <th class="column-mobile ">手机号<span></span></th>
+                                        <th class="column-email ">邮箱<span></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {$html}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+        	</div>
+        </div>
+      </div>	
+{/block}
+
+{block name="script"}
+<script src="__LIBS__/bootstrap-treeview/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+    $(function() {          
+        var resulet = {$resulet};       
+        $('#treeview1').treeview({
+            levels: 2,                   
+            data: resulet,
+            onNodeSelected: function(event, node) {
+            var nodeid = node.id;
+            $.ajax({
+             type:"post",
+             url:"{:url('companyphone/getphone')}",
+             data:{id:nodeid},
+             success:function(data){
+                 $('tbody').html(data);
+                 $('#search-input').attr('value','');
+             }
+            });
+           },
+        });  
+        $('#treeview1').treeview('toggleNodeSelected', [ 0, { silent: true } ]);
+        });
+
+        </script>
+{/block}

@@ -1,0 +1,21 @@
+<div class="col-md-{$width|default=6}">
+    <div class="block block-bordered">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">我的任务</h3>
+        </div>
+        <div class="block-content">
+            <table class="table">
+                <tbody>
+                {volist name="task" id="vo"}
+                <tr>
+                    <td><a href="{:url('task/index/mytask')}">{$vo}</a></td>
+                </tr>
+                {/volist}
+                <tr>
+                    <td><a href="{:url('task/index/mytask')}">查看更多>></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

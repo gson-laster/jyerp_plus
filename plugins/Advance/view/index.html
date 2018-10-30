@@ -1,0 +1,52 @@
+<style>
+
+    .block-content{text-align: center;}
+    th{text-align: center;}
+    td{text-align: center;}
+    #li{color: blue;}
+    #cai{color: green;}
+    #jun{color:red;}
+</style>
+<div class="col-md-6">
+    <div class="block block-bordered1">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">项目进度信息表</h3>
+        </div>
+        <div class="block-content">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>项    目</th>
+                    <th>开始时间</th>
+                    <th>预计工期</th>
+                    <th>进    度<th/>
+                </tr>
+                {volist name="data" id="vo"}
+                
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td><?php echo date('Y-m-d',$vo['start_time']) ?></td>
+                    <td>{$vo.obj_time}</td>
+                    <td>
+                    	{if condition ="$vo.real_status eq 1"}<span id="li"><b>已立项</b></span>
+                    	{elseif condition ="$vo.real_status eq 2" /}<span id = "cai"><b>已采购</b></span>
+                    	{elseif condition ="$vo.real_status eq 3" /}<span id = "jun"><b>已竣工</b></span>
+                        {elseif condition ="$vo.real_status eq 4" /}<span id = "wan"><b>已完工</b></span>
+                    
+						{/if}
+                    <td/>
+                </tr>
+
+                {/volist}
+                <tr>
+                    <td id="more"><a href="{:url('sales/tender/index')}">查看更多>></a></td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
